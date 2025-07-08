@@ -1,0 +1,35 @@
+2. Flowchart (Tulisan Tangan - Panduan Gambar)
+Langkah-Langkah Flowchart yang bisa kamu gambar di buku:
+
+Mulai
+
+Buka file input
+
+Baca data mahasiswa ke array
+
+Tampilkan menu:
+
+Tampilkan Data
+
+Cari berdasarkan NIM
+
+Urutkan berdasarkan Nama
+
+Simpan ke File
+
+Keluar
+
+Jika pilih 1 → tampilkan data
+
+Jika pilih 2 → minta NIM, lakukan pencarian
+
+Jika pilih 3 → urutkan dengan bubble sort
+
+Jika pilih 4 → simpan ke file
+
+Jika pilih 5 → selesai
+
+Kembali ke menu
+
+Selesai
+
