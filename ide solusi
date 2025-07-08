@@ -1,0 +1,24 @@
+1. Ide Solusi (Tulisan Tangan - Panduan Isi)
+Judul: Sistem Pengelolaan Data Mahasiswa
+Deskripsi: Program ini digunakan untuk:
+
+Membaca data mahasiswa dari file.
+
+Menyimpan hasil olahan kembali ke file.
+
+Menggunakan struct dan array untuk menyimpan data.
+
+Menerapkan searching (pencarian berdasarkan NIM) dan sorting (pengurutan berdasarkan nama).
+
+Fitur Utama:
+
+Baca data dari file mahasiswa.txt
+
+Tampilkan seluruh data mahasiswa
+
+Cari mahasiswa berdasarkan NIM (sequential search)
+
+Urutkan berdasarkan nama (bubble sort)
+
+Simpan hasil ke file output_mahasiswa.txt
+
