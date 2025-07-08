@@ -1,0 +1,37 @@
+3. Pseudocode / Algoritma (Tulisan Tangan - Panduan Isi)
+plaintext
+Copy code
+Deklarasi struct Mahasiswa {
+  string nim, nama, jurusan
+  int angkatan
+}
+
+Deklarasi array Mahasiswa data[100]
+Deklarasi integer jumlahData
+
+Buka file "mahasiswa.txt"
+Selama belum EOF, baca setiap baris ke array data[]
+Tutup file
+
+Ulangi:
+  Tampilkan menu
+  Input pilihan
+
+  Jika pilihan = 1:
+    Tampilkan semua data
+
+  Jika pilihan = 2:
+    Input NIM yang dicari
+    Lakukan pencarian linear search
+    Jika ketemu tampilkan, jika tidak tampilkan tidak ditemukan
+
+  Jika pilihan = 3:
+    Lakukan bubble sort berdasarkan nama
+
+  Jika pilihan = 4:
+    Simpan data ke "output_mahasiswa.txt"
+
+  Jika pilihan = 5:
+    Keluar
+
+Ulangi sampai pilih 5
