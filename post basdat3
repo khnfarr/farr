@@ -1,0 +1,126 @@
+Bisa banget 😄👌 aku bantu kerjakan **Post Test** ini dengan penjelasan yang singkat, jelas, dan *siap dikumpul!*
+
+---
+
+## **POST TEST**
+
+### **Tabel Awal (Belum Normal)**
+
+| No Fatur | Tanggal  | Kd Pelanggan | Nama  | Kode Barang | Nama Barang | Harga  | QTY |
+| -------- | -------- | ------------ | ----- | ----------- | ----------- | ------ | --- |
+| F-01     | 12/10/20 | P-001        | Tommy | K-001       | Mie         | 10.000 | 5   |
+| F-01     | 12/10/20 | P-001        | Tommy | K-002       | Gula        | 20.000 | 2   |
+| F-02     | 15/10/20 | P-002        | Susi  | K-001       | Mie         | 10.000 | 3   |
+| F-02     | 15/10/20 | P-002        | Susi  | K-003       | Garam       | 8.000  | 2   |
+| F-03     | 16/10/20 | P-003        | Yanti | K-004       | Tepung      | 15.000 | 1   |
+| F-03     | 16/10/20 | P-003        | Yanti | K-002       | Gula        | 20.000 | 1   |
+
+---
+
+## **1️⃣ Normalisasi hingga 3NF**
+
+### **➡ 1NF (First Normal Form)**
+
+Data sudah atomik (tidak ada data ganda dalam satu kolom).
+Namun masih ada pengulangan data pelanggan dan barang di setiap baris.
+
+---
+
+### **➡ 2NF (Second Normal Form)**
+
+Hilangkan ketergantungan parsial dari kunci utama gabungan (`No_Fatur`, `Kode_Barang`).
+
+Pisahkan jadi 3 tabel:
+
+1. **Tabel Pelanggan**
+
+   | Kd_Pelanggan | Nama  |
+   | ------------ | ----- |
+   | P-001        | Tommy |
+   | P-002        | Susi  |
+   | P-003        | Yanti |
+
+2. **Tabel Barang**
+
+   | Kode_Barang | Nama_Barang | Harga  |
+   | ----------- | ----------- | ------ |
+   | K-001       | Mie         | 10.000 |
+   | K-002       | Gula        | 20.000 |
+   | K-003       | Garam       | 8.000  |
+   | K-004       | Tepung      | 15.000 |
+
+3. **Tabel Penjualan**
+
+   | No_Fatur | Tanggal  | Kd_Pelanggan |
+   | -------- | -------- | ------------ |
+   | F-01     | 12/10/20 | P-001        |
+   | F-02     | 15/10/20 | P-002        |
+   | F-03     | 16/10/20 | P-003        |
+
+4. **Tabel Detail_Penjualan**
+
+   | No_Fatur | Kode_Barang | QTY |
+   | -------- | ----------- | --- |
+   | F-01     | K-001       | 5   |
+   | F-01     | K-002       | 2   |
+   | F-02     | K-001       | 3   |
+   | F-02     | K-003       | 2   |
+   | F-03     | K-004       | 1   |
+   | F-03     | K-002       | 1   |
+
+---
+
+### **➡ 3NF (Third Normal Form)**
+
+Tidak ada ketergantungan antar atribut non-kunci.
+Semua atribut non-kunci bergantung langsung pada *primary key* di tabel masing-masing.
+✅ Jadi struktur ini sudah **3NF (tabel berkualitas baik).**
+
+---
+
+## **2️⃣ Implementasi di PHPMyAdmin (Panduan Singkat)**
+
+Buat tabel-tabel berikut dan hubungkan dengan **Foreign Key**:
+
+```sql
+CREATE TABLE Pelanggan (
+  Kd_Pelanggan VARCHAR(10) PRIMARY KEY,
+  Nama VARCHAR(50)
+);
+
+CREATE TABLE Barang (
+  Kode_Barang VARCHAR(10) PRIMARY KEY,
+  Nama_Barang VARCHAR(50),
+  Harga INT
+);
+
+CREATE TABLE Penjualan (
+  No_Fatur VARCHAR(10) PRIMARY KEY,
+  Tanggal DATE,
+  Kd_Pelanggan VARCHAR(10),
+  FOREIGN KEY (Kd_Pelanggan) REFERENCES Pelanggan(Kd_Pelanggan)
+);
+
+CREATE TABLE Detail_Penjualan (
+  ID_Detail INT AUTO_INCREMENT PRIMARY KEY,
+  No_Fatur VARCHAR(10),
+  Kode_Barang VARCHAR(10),
+  QTY INT,
+  FOREIGN KEY (No_Fatur) REFERENCES Penjualan(No_Fatur),
+  FOREIGN KEY (Kode_Barang) REFERENCES Barang(Kode_Barang)
+);
+```
+
+Kemudian isi datanya sesuai tabel kasus.
+
+---
+
+### ✅ **Kesimpulan**
+
+* Hasil normalisasi menghasilkan **4 tabel utama:**
+  `Pelanggan`, `Barang`, `Penjualan`, dan `Detail_Penjualan`.
+* Semua tabel sudah **3NF**, bebas anomali, dan siap diimplementasikan di PHPMyAdmin.
+
+---
+
+Kamu mau aku buatin juga **versi siap dikumpul (format laporan praktikum)** biar tinggal kamu salin ke Word / PDF?
