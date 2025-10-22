@@ -1,0 +1,88 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct KTP {
+    string nik;
+    string nama;
+    string tanggalLahir;
+    string alamat;
+    KTP* next; // pointer ke data berikutnya
+};
+
+KTP* head = NULL; // pointer awal list
+
+void tambahData() {
+    KTP* baru = new KTP;
+    cout << "\n=== Tambah Data KTP ===\n";
+    cout << "Masukkan NIK           : ";
+    getline(cin, baru->nik);
+    cout << "Masukkan Nama          : ";
+    getline(cin, baru->nama);
+    cout << "Masukkan Tanggal Lahir : ";
+    getline(cin, baru->tanggalLahir);
+    cout << "Masukkan Alamat        : ";
+    getline(cin, baru->alamat);
+
+    baru->next = NULL;
+
+    if (head == NULL) {
+        head = baru; // data pertama
+    } else {
+        KTP* temp = head;
+        while (temp->next != NULL) {
+            temp = temp->next; // pindah ke node terakhir
+        }
+        temp->next = baru; // sambungkan node baru di akhir
+    }
+
+    cout << "\nData berhasil ditambahkan!\n";
+}
+
+void tampilData() {
+    cout << "\n=== Daftar Data KTP ===\n";
+    if (head == NULL) {
+        cout << "Belum ada data.\n";
+        return;
+    }
+
+    KTP* temp = head;
+    int no = 1;
+    while (temp != NULL) {
+        cout << "\nData ke-" << no++ << ":\n";
+        cout << "NIK           : " << temp->nik << endl;
+        cout << "Nama          : " << temp->nama << endl;
+        cout << "Tanggal Lahir : " << temp->tanggalLahir << endl;
+        cout << "Alamat        : " << temp->alamat << endl;
+        temp = temp->next; // lanjut ke node berikutnya
+    }
+}
+
+int main() {
+    int pilihan;
+    do {
+        cout << "\n==== MENU PROGRAM DATA KTP ====\n";
+        cout << "1. Tambah Data\n";
+        cout << "2. Tampil Data\n";
+        cout << "3. Keluar\n";
+        cout << "Pilih menu: ";
+        cin >> pilihan;
+        cin.ignore(); // bersihkan newline dari buffer
+
+        switch (pilihan) {
+            case 1:
+                tambahData();
+                break;
+            case 2:
+                tampilData();
+                break;
+            case 3:
+                cout << "\nTerima kasih!\n";
+                break;
+            default:
+                cout << "\nPilihan tidak valid!\n";
+        }
+    } while (pilihan != 3);
+
+    return 0;
+}
