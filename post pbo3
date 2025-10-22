@@ -1,0 +1,105 @@
+public class Produk {
+    private String kodeProduk;
+    private String namaProduk;
+    private double harga;
+
+    // Constructor default
+    public Produk() {
+        this.kodeProduk = "P000";
+        this.namaProduk = "Unknown";
+        this.harga = 0.0;
+    }
+
+    // Constructor berparameter
+    public Produk(String kodeProduk, String namaProduk, double harga) {
+        this.kodeProduk = kodeProduk;
+        this.namaProduk = namaProduk;
+        // gunakan setter untuk memastikan validasi harga
+        setHarga(harga);
+    }
+
+    // Getter dan Setter untuk kodeProduk
+    public String getKodeProduk() {
+        return kodeProduk;
+    }
+
+    public void setKodeProduk(String kodeProduk) {
+        if (kodeProduk != null) {
+            this.kodeProduk = kodeProduk;
+        }
+    }
+
+    // Getter dan Setter untuk namaProduk
+    public String getNamaProduk() {
+        return namaProduk;
+    }
+
+    public void setNamaProduk(String namaProduk) {
+        if (namaProduk != null) {
+            this.namaProduk = namaProduk;
+        }
+    }
+
+    // Getter dan Setter untuk harga
+    public double getHarga() {
+        return harga;
+    }
+
+    // Harga hanya boleh diubah jika lebih besar dari 0
+    public void setHarga(double harga) {
+        if (harga > 0) {
+            this.harga = harga;
+        } else {
+            // jika nilai tidak valid biarkan harga tetap; bisa juga berikan pesan
+            // untuk kepentingan debugging kita cetak peringatan
+            System.out.println("Nilai harga tidak valid (harus > 0). Perubahan diabaikan.");
+        }
+    }
+
+    // Method tampilkanInfo()
+    public void tampilkanInfo() {
+        System.out.println("=== Informasi Produk ===");
+        System.out.println("Kode Produk : " + getKodeProduk());
+        System.out.println("Nama Produk : " + getNamaProduk());
+        System.out.println("Harga       : Rp " + String.format("%.2f", getHarga()));
+    }
+}
+
+public class Tester {
+    public static void main(String[] args) {
+        // Produk pertama menggunakan constructor default
+        Produk p1 = new Produk();
+        System.out.println("Produk pertama (default):");
+        p1.tampilkanInfo();
+
+        System.out.println();
+
+        // Produk kedua menggunakan constructor berparameter
+        Produk p2 = new Produk("P101", "Kopi Latte", 25000.0);
+        System.out.println("Produk kedua (parameter):");
+        p2.tampilkanInfo();
+
+        System.out.println();
+
+        // Uji validasi setter harga
+        System.out.println("Menguji setter harga pada p1 (coba set -500 dan 15000):");
+        p1.setHarga(-500.0);   // harus ditolak dan menampilkan peringatan
+        p1.tampilkanInfo();
+
+        System.out.println();
+
+        p1.setHarga(15000.0);  // harus diterima
+        p1.tampilkanInfo();
+
+        System.out.println();
+
+        // Uji ubah atribut lain dengan setter/getter
+        System.out.println("Mengubah nama dan kode p1:");
+        p1.setNamaProduk("Teh Tarik");
+        p1.setKodeProduk("P002");
+        p1.tampilkanInfo();
+    }
+}
+
+
+
