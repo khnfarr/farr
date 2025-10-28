@@ -1,0 +1,93 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct KTP {
+    string nik;
+    string nama;
+    string tanggalLahir;
+    string alamat;
+    KTP* next; // pointer ke node berikutnya
+};
+
+KTP* head = NULL; // pointer awal (kepala) list
+
+void tambahData() {
+    KTP* baru = new KTP;
+
+    cout << "\n=== Tambah Data KTP ===\n";
+    cout << "Masukkan NIK           : ";
+    getline(cin, baru->nik);
+    cout << "Masukkan Nama          : ";
+    getline(cin, baru->nama);
+    cout << "Masukkan Tanggal Lahir : ";
+    getline(cin, baru->tanggalLahir);
+    cout << "Masukkan Alamat        : ";
+    getline(cin, baru->alamat);
+
+    if (head == NULL) {
+        // Jika list masih kosong
+        head = baru;
+        baru->next = head; // menunjuk ke dirinya sendiri
+    } else {
+        // Jika sudah ada data
+        KTP* temp = head;
+        while (temp->next != head) {
+            temp = temp->next; // cari node terakhir
+        }
+        temp->next = baru; // node terakhir menunjuk ke node baru
+        baru->next = head; // node baru menunjuk ke head
+    }
+
+    cout << "\nData berhasil ditambahkan!\n";
+}
+
+void tampilData() {
+    cout << "\n=== Daftar Data KTP ===\n";
+    if (head == NULL) {
+        cout << "Belum ada data.\n";
+        return;
+    }
+
+    KTP* temp = head;
+    int no = 1;
+
+    do {
+        cout << "\nData ke-" << no++ << ":\n";
+        cout << "NIK           : " << temp->nik << endl;
+        cout << "Nama          : " << temp->nama << endl;
+        cout << "Tanggal Lahir : " << temp->tanggalLahir << endl;
+        cout << "Alamat        : " << temp->alamat << endl;
+        temp = temp->next;
+    } while (temp != head); // berhenti saat kembali ke awal
+}
+
+int main() {
+    int pilihan;
+
+    do {
+        cout << "\n==== MENU PROGRAM DATA KTP (Circular Linked List) ====\n";
+        cout << "1. Tambah Data\n";
+        cout << "2. Tampil Data\n";
+        cout << "3. Keluar\n";
+        cout << "Pilih menu: ";
+        cin >> pilihan;
+        cin.ignore(); // hapus newline di buffer
+
+        switch (pilihan) {
+            case 1:
+                tambahData();
+                break;
+            case 2:
+                tampilData();
+                break;
+            case 3:
+                cout << "\nTerima kasih!\n";
+                break;
+            default:
+                cout << "\nPilihan tidak valid!\n";
+        }
+    } while (pilihan != 3);
+
+    return 0;
+}
