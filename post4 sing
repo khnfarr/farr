@@ -1,0 +1,123 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct KTP {
+    string nik;
+    string nama;
+    string tanggalLahir;
+    string alamat;
+    KTP* next; // pointer ke data berikutnya
+};
+
+KTP* head = NULL; // pointer awal list
+
+// ======================= TAMBAH DATA (Tim Genap - di depan) =======================
+void tambahData() {
+    KTP* baru = new KTP;
+    cin.ignore(); // bersihkan buffer agar getline tidak dilewati
+
+    cout << "\n=== Tambah Data KTP ===\n";
+    cout << "Masukkan NIK           : ";
+    getline(cin, baru->nik);
+    cout << "Masukkan Nama          : ";
+    getline(cin, baru->nama);
+    cout << "Masukkan Tanggal Lahir : ";
+    getline(cin, baru->tanggalLahir);
+    cout << "Masukkan Alamat        : ";
+    getline(cin, baru->alamat);
+
+    // Tambah di depan
+    baru->next = head;
+    head = baru;
+
+    cout << "\nData berhasil ditambahkan di DEPAN (Tim Genap)!\n";
+}
+
+// ======================= TAMPIL DATA =======================
+void tampilData() {
+    cout << "\n=== Daftar Data KTP ===\n";
+    if (head == NULL) {
+        cout << "Belum ada data.\n";
+        return;
+    }
+
+    KTP* temp = head;
+    int no = 1;
+    while (temp != NULL) {
+        cout << "\nData ke-" << no++ << ":\n";
+        cout << "NIK           : " << temp->nik << endl;
+        cout << "Nama          : " << temp->nama << endl;
+        cout << "Tanggal Lahir : " << temp->tanggalLahir << endl;
+        cout << "Alamat        : " << temp->alamat << endl;
+        temp = temp->next;
+    }
+}
+
+// ======================= HAPUS DATA =======================
+void hapusData() {
+    if (head == NULL) {
+        cout << "\nTidak ada data untuk dihapus.\n";
+        return;
+    }
+
+    string hapusNIK;
+    cin.ignore();
+    cout << "\nMasukkan NIK yang ingin dihapus: ";
+    getline(cin, hapusNIK);
+
+    KTP *temp = head, *prev = NULL;
+
+    while (temp != NULL && temp->nik != hapusNIK) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        cout << "\nData dengan NIK tersebut tidak ditemukan.\n";
+        return;
+    }
+
+    if (prev == NULL) {
+        // data yang dihapus adalah head
+        head = head->next;
+    } else {
+        prev->next = temp->next;
+    }
+
+    delete temp;
+    cout << "\nData berhasil dihapus.\n";
+}
+
+// ======================= MENU UTAMA =======================
+int main() {
+    int pilihan;
+    do {
+        cout << "\n==== MENU PROGRAM DATA KTP ====\n";
+        cout << "1. Tambah Data (di depan - Tim Genap)\n";
+        cout << "2. Tampil Data\n";
+        cout << "3. Hapus Data\n";
+        cout << "4. Keluar\n";
+        cout << "Pilih menu: ";
+        cin >> pilihan;
+
+        switch (pilihan) {
+            case 1:
+                tambahData();
+                break;
+            case 2:
+                tampilData();
+                break;
+            case 3:
+                hapusData();
+                break;
+            case 4:
+                cout << "\nTerima kasih!\n";
+                break;
+            default:
+                cout << "\nPilihan tidak valid!\n";
+        }
+    } while (pilihan != 4);
+
+    return 0;
+}
