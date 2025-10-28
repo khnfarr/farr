@@ -1,0 +1,143 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct KTP {
+    string nik;
+    string nama;
+    string tanggalLahir;
+    string alamat;
+    KTP* next; // pointer ke data berikutnya
+};
+
+KTP* head = NULL; // pointer awal list
+
+// ======================= TAMBAH DATA (di depan untuk tim genap) =======================
+void tambahData() {
+    KTP* baru = new KTP;
+    cout << "\n=== Tambah Data KTP ===\n";
+    cin.ignore(); // bersihkan buffer agar getline tidak dilewati
+    cout << "Masukkan NIK           : ";
+    getline(cin, baru->nik);
+    cout << "Masukkan Nama          : ";
+    getline(cin, baru->nama);
+    cout << "Masukkan Tanggal Lahir : ";
+    getline(cin, baru->tanggalLahir);
+    cout << "Masukkan Alamat        : ";
+    getline(cin, baru->alamat);
+
+    if (head == NULL) {
+        head = baru;
+        baru->next = head; // circular, menunjuk ke dirinya sendiri
+    } else {
+        KTP* temp = head;
+        while (temp->next != head) {
+            temp = temp->next;
+        }
+        baru->next = head; // baru menunjuk ke head lama
+        temp->next = baru; // node terakhir menunjuk ke node baru
+        head = baru;       // node baru jadi head baru
+    }
+
+    cout << "\nData berhasil ditambahkan di DEPAN (Tim Genap)!\n";
+}
+
+// ======================= TAMPIL DATA =======================
+void tampilData() {
+    cout << "\n=== Daftar Data KTP (Circular Linked List) ===\n";
+    if (head == NULL) {
+        cout << "Belum ada data.\n";
+        return;
+    }
+
+    KTP* temp = head;
+    int no = 1;
+    do {
+        cout << "\nData ke-" << no++ << ":\n";
+        cout << "NIK           : " << temp->nik << endl;
+        cout << "Nama          : " << temp->nama << endl;
+        cout << "Tanggal Lahir : " << temp->tanggalLahir << endl;
+        cout << "Alamat        : " << temp->alamat << endl;
+        temp = temp->next;
+    } while (temp != head);
+}
+
+// ======================= HAPUS DATA =======================
+void hapusData() {
+    if (head == NULL) {
+        cout << "\nTidak ada data untuk dihapus.\n";
+        return;
+    }
+
+    string hapusNIK;
+    cout << "\nMasukkan NIK yang ingin dihapus: ";
+    cin.ignore();
+    getline(cin, hapusNIK);
+
+    KTP *temp = head, *prev = NULL;
+
+    // Jika hanya 1 node dan cocok
+    if (head->next == head && head->nik == hapusNIK) {
+        delete head;
+        head = NULL;
+        cout << "\nData berhasil dihapus.\n";
+        return;
+    }
+
+    // Cari node yang cocok
+    do {
+        if (temp->nik == hapusNIK) {
+            if (temp == head) {
+                // Hapus head
+                KTP* last = head;
+                while (last->next != head)
+                    last = last->next;
+                head = head->next;
+                last->next = head;
+                delete temp;
+            } else {
+                prev->next = temp->next;
+                delete temp;
+            }
+            cout << "\nData berhasil dihapus.\n";
+            return;
+        }
+        prev = temp;
+        temp = temp->next;
+    } while (temp != head);
+
+    cout << "\nData dengan NIK tersebut tidak ditemukan.\n";
+}
+
+// ======================= MENU UTAMA =======================
+int main() {
+    int pilihan;
+    do {
+        cout << "\n==== MENU PROGRAM DATA KTP (CIRCULAR LINKED LIST) ====\n";
+        cout << "1. Tambah Data (di depan - Tim Genap)\n";
+        cout << "2. Tampil Data\n";
+        cout << "3. Hapus Data\n";
+        cout << "4. Keluar\n";
+        cout << "Pilih menu: ";
+        cin >> pilihan;
+
+        switch (pilihan) {
+            case 1:
+                tambahData();
+                break;
+            case 2:
+                tampilData();
+                break;
+            case 3:
+                hapusData();
+                break;
+            case 4:
+                cout << "\nTerima kasih!\n";
+                break;
+            default:
+                cout << "\nPilihan tidak valid!\n";
+        }
+    } while (pilihan != 4);
+
+    return 0;
+}
