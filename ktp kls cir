@@ -1,0 +1,280 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+struct KTP {
+    string nik;
+    string nama;
+    string tempatLahir;
+    string tanggalLahir;
+    string jenisKelamin;
+    string golDarah;
+    string alamatJalan;
+    string rt;
+    string rw;
+    string kelurahan;
+    string kecamatan;
+    string kabupaten;
+    string provinsi;
+    string kodePos;
+    string agama;
+    string statusPerkawinan;
+    string pekerjaan;
+    string kewarganegaraan;
+    string berlakuHingga;
+
+    KTP* next;
+};
+
+class CircularListKTP {
+private:
+    KTP* head;
+
+public:
+    CircularListKTP() {
+        head = NULL;
+    }
+
+    // ------------------- Tambah Data -------------------
+    void tambahData() {
+        KTP* baru = new KTP;
+        cout << "\n=== Tambah Data KTP ===\n";
+        cout << "NIK               : "; getline(cin, baru->nik);
+        cout << "Nama              : "; getline(cin, baru->nama);
+        cout << "Tempat Lahir      : "; getline(cin, baru->tempatLahir);
+        cout << "Tanggal Lahir     : "; getline(cin, baru->tanggalLahir);
+        cout << "Jenis Kelamin     : "; getline(cin, baru->jenisKelamin);
+        cout << "Golongan Darah    : "; getline(cin, baru->golDarah);
+        cout << "Alamat (Jalan)    : "; getline(cin, baru->alamatJalan);
+        cout << "RT                : "; getline(cin, baru->rt);
+        cout << "RW                : "; getline(cin, baru->rw);
+        cout << "Kel/Desa          : "; getline(cin, baru->kelurahan);
+        cout << "Kecamatan         : "; getline(cin, baru->kecamatan);
+        cout << "Kabupaten/Kota    : "; getline(cin, baru->kabupaten);
+        cout << "Provinsi          : "; getline(cin, baru->provinsi);
+        cout << "Kode Pos          : "; getline(cin, baru->kodePos);
+        cout << "Agama             : "; getline(cin, baru->agama);
+        cout << "Status Perkawinan : "; getline(cin, baru->statusPerkawinan);
+        cout << "Pekerjaan         : "; getline(cin, baru->pekerjaan);
+        cout << "Kewarganegaraan   : "; getline(cin, baru->kewarganegaraan);
+        cout << "Berlaku Hingga    : "; getline(cin, baru->berlakuHingga);
+
+        baru->next = baru; // sementara menunjuk diri sendiri
+
+        if (head == NULL) {
+            head = baru;
+        } else {
+            KTP* temp = head;
+            while (temp->next != head)
+                temp = temp->next;
+            temp->next = baru;
+            baru->next = head;
+        }
+
+        cout << " Data berhasil ditambahkan!\n";
+    }
+
+    // ------------------- Simpan ke File -------------------
+    void simpanKeFile(const char* namaFile) {
+        if (head == NULL) {
+            cout << "? Tidak ada data untuk disimpan.\n";
+            return;
+        }
+
+        ofstream file(namaFile);
+        if (!file) {
+            cout << " Gagal membuka file.\n";
+            return;
+        }
+
+        KTP* temp = head;
+        do {
+            file << temp->nik << endl;
+            file << temp->nama << endl;
+            file << temp->tempatLahir << endl;
+            file << temp->tanggalLahir << endl;
+            file << temp->jenisKelamin << endl;
+            file << temp->golDarah << endl;
+            file << temp->alamatJalan << endl;
+            file << temp->rt << endl;
+            file << temp->rw << endl;
+            file << temp->kelurahan << endl;
+            file << temp->kecamatan << endl;
+            file << temp->kabupaten << endl;
+            file << temp->provinsi << endl;
+            file << temp->kodePos << endl;
+            file << temp->agama << endl;
+            file << temp->statusPerkawinan << endl;
+            file << temp->pekerjaan << endl;
+            file << temp->kewarganegaraan << endl;
+            file << temp->berlakuHingga << endl;
+            file << "---" << endl;
+
+            temp = temp->next;
+        } while (temp != head);
+
+        file.close();
+        cout << " Data berhasil disimpan ke " << namaFile << endl;
+    }
+
+    // ------------------- Baca dari File -------------------
+    void bacaDariFile(const char* namaFile) {
+        ifstream file(namaFile);
+        if (!file) {
+            cout << " File tidak ditemukan.\n";
+            return;
+        }
+
+        head = NULL;
+        KTP* tail = NULL;
+
+        while (true) {
+            KTP* baru = new KTP;
+            if (!getline(file, baru->nik)) break;
+            getline(file, baru->nama);
+            getline(file, baru->tempatLahir);
+            getline(file, baru->tanggalLahir);
+            getline(file, baru->jenisKelamin);
+            getline(file, baru->golDarah);
+            getline(file, baru->alamatJalan);
+            getline(file, baru->rt);
+            getline(file, baru->rw);
+            getline(file, baru->kelurahan);
+            getline(file, baru->kecamatan);
+            getline(file, baru->kabupaten);
+            getline(file, baru->provinsi);
+            getline(file, baru->kodePos);
+            getline(file, baru->agama);
+            getline(file, baru->statusPerkawinan);
+            getline(file, baru->pekerjaan);
+            getline(file, baru->kewarganegaraan);
+            getline(file, baru->berlakuHingga);
+            string pemisah;
+            getline(file, pemisah);
+
+            baru->next = baru;
+
+            if (head == NULL) {
+                head = tail = baru;
+            } else {
+                tail->next = baru;
+                baru->next = head;
+                tail = baru;
+            }
+        }
+
+        file.close();
+        if (head != NULL)
+            cout << " Data berhasil dibaca dari " << namaFile << endl;
+        else
+            cout << " File kosong atau tidak ada data.\n";
+    }
+
+    // ------------------- Update Alamat Berdasarkan NIK -------------------
+    void updateAlamat() {
+        if (head == NULL) {
+            cout << " Tidak ada data untuk diupdate.\n";
+            return;
+        }
+
+        string nikCari;
+        cout << "\nMasukkan NIK yang akan diupdate: ";
+        getline(cin, nikCari);
+
+        KTP* temp = head;
+        bool ditemukan = false;
+
+        do {
+            if (temp->nik == nikCari) {
+                cout << "Data ditemukan!\nAlamat lama: " << temp->alamatJalan << endl;
+                cout << "Masukkan alamat baru: ";
+                getline(cin, temp->alamatJalan);
+                cout << "? Alamat berhasil diupdate.\n";
+                ditemukan = true;
+                break;
+            }
+            temp = temp->next;
+        } while (temp != head);
+
+        if (!ditemukan)
+            cout << " Data dengan NIK tersebut tidak ditemukan.\n";
+    }
+
+    // ------------------- Tampilkan Semua Data -------------------
+    void tampilkanData() {
+        if (head == NULL) {
+            cout << "Tidak ada data.\n";
+            return;
+        }
+
+        KTP* temp = head;
+        int no = 1;
+        cout << "\n===== DATA KTP =====\n";
+        do {
+            cout << "\nData ke-" << no++ << endl;
+            cout << "NIK               : " << temp->nik << endl;
+            cout << "Nama              : " << temp->nama << endl;
+            cout << "Tempat, Tgl Lahir : " << temp->tempatLahir << ", " << temp->tanggalLahir << endl;
+            cout << "Alamat            : " << temp->alamatJalan << endl;
+            cout << "RT/RW             : " << temp->rt << "/" << temp->rw << endl;
+            cout << "Kel/Desa          : " << temp->kelurahan << endl;
+            cout << "Kecamatan         : " << temp->kecamatan << endl;
+            cout << "Kabupaten/Kota    : " << temp->kabupaten << endl;
+            cout << "Provinsi          : " << temp->provinsi << endl;
+            cout << "Kode Pos          : " << temp->kodePos << endl;
+            cout << "Agama             : " << temp->agama << endl;
+            cout << "Status Perkawinan : " << temp->statusPerkawinan << endl;
+            cout << "Pekerjaan         : " << temp->pekerjaan << endl;
+            cout << "Kewarganegaraan   : " << temp->kewarganegaraan << endl;
+            cout << "Berlaku Hingga    : " << temp->berlakuHingga << endl;
+            temp = temp->next;
+        } while (temp != head);
+    }
+};
+
+int main() {
+    CircularListKTP daftar;
+    int pilih;
+
+    do {
+        cout << "\n=== MENU CIRCULAR LINKED LIST KTP ===\n";
+        cout << "1. Baca Data dari File\n";
+        cout << "2. Tambah Data Baru\n";
+        cout << "3. Tampilkan Semua Data\n";
+        cout << "4. Update Alamat Berdasarkan NIK\n";
+        cout << "5. Simpan ke File\n";
+        cout << "0. Keluar\n";
+        cout << "Pilih menu: ";
+        cin >> pilih;
+        cin.ignore();
+
+        switch (pilih) {
+            case 1:
+                daftar.bacaDariFile("data_ktp.txt");
+                break;
+            case 2:
+                daftar.tambahData();
+                break;
+            case 3:
+                daftar.tampilkanData();
+                break;
+            case 4:
+                daftar.simpanKeFile("data_ktp_sebelum_update.txt"); 
+                daftar.updateAlamat();
+                daftar.simpanKeFile("data_ktp.txt"); 
+                cout << " File lama disimpan sebagai data_ktp_sebelum_update.txt\n";
+                break;
+            case 5:
+                daftar.simpanKeFile("data_ktp.txt");
+                break;
+            case 0:
+                cout << "Program selesai.\n";
+                break;
+            default:
+                cout << "Pilihan tidak valid.\n";
+        }
+    } while (pilih != 0);
+
+    return 0;
+}
