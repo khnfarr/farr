@@ -1,0 +1,104 @@
+// Superclass
+class Pegawai {
+    String nip;
+    String nama;
+
+    Pegawai(String nip, String nama) {
+        this.nip = nip;
+        this.nama = nama;
+    }
+
+    double hitungGaji() {
+        return 0; // default
+    }
+
+    void info() {
+        System.out.println("NIP       : " + nip);
+        System.out.println("Nama      : " + nama);
+    }
+}
+
+// Subclass 1: Pegawai Tetap
+class PegawaiTetap extends Pegawai {
+    double gajiPokok;
+    double tunjangan;
+
+    PegawaiTetap(String nip, String nama, double gajiPokok, double tunjangan) {
+        super(nip, nama);
+        this.gajiPokok = gajiPokok;
+        this.tunjangan = tunjangan;
+    }
+
+    double hitungGaji() {
+        return gajiPokok + tunjangan;
+    }
+
+    void info() {
+        System.out.println("=== Data Pegawai Tetap ===");
+        super.info();
+        System.out.println("Gaji Pokok : " + gajiPokok);
+        System.out.println("Tunjangan  : " + tunjangan);
+        System.out.println("Total Gaji : " + hitungGaji());
+        System.out.println();
+    }
+}
+
+// Subclass 2: Pegawai Kontrak
+class PegawaiKontrak extends Pegawai {
+    double upahHarian;
+    int hariKerja;
+
+    PegawaiKontrak(String nip, String nama, double upahHarian, int hariKerja) {
+        super(nip, nama);
+        this.upahHarian = upahHarian;
+        this.hariKerja = hariKerja;
+    }
+
+    double hitungGaji() {
+        return upahHarian * hariKerja;
+    }
+
+    void info() {
+        System.out.println("=== Data Pegawai Kontrak ===");
+        super.info();
+        System.out.println("Upah Harian : " + upahHarian);
+        System.out.println("Hari Kerja  : " + hariKerja);
+        System.out.println("Total Gaji  : " + hitungGaji());
+        System.out.println();
+    }
+}
+
+// Subclass 3: Pegawai Magang
+class PegawaiMagang extends Pegawai {
+    double uangSaku;
+
+    PegawaiMagang(String nip, String nama, double uangSaku) {
+        super(nip, nama);
+        this.uangSaku = uangSaku;
+    }
+
+    double hitungGaji() {
+        return uangSaku;
+    }
+
+    void info() {
+        System.out.println("=== Data Pegawai Magang ===");
+        super.info();
+        System.out.println("Uang Saku  : " + uangSaku);
+        System.out.println("Total Gaji : " + hitungGaji());
+        System.out.println();
+    }
+}
+
+// Class Tester
+public class Main {
+    public static void main(String[] args) {
+        PegawaiTetap p1 = new PegawaiTetap("001", "Khansa", 5000000, 1000000);
+        PegawaiKontrak p2 = new PegawaiKontrak("002", "Farras", 200000, 20);
+        PegawaiMagang p3 = new PegawaiMagang("003", "Haibah", 1000000);
+
+        p1.info();
+        p2.info();
+        p3.info();
+    }
+}
