@@ -1,0 +1,136 @@
+
+## 🔹 **Bagian 1: Critical Region**
+
+### 1. Apa fungsi dari statement `wait`?
+
+➡️ **Jawaban:**
+Fungsi `wait` adalah untuk menunggu semua proses (thread) yang sedang berjalan selesai sebelum program utama (`main`) melanjutkan eksekusi ke perintah berikutnya.
+Dengan kata lain, `wait` memastikan bahwa program utama tidak menutup atau keluar sebelum semua thread (misalnya `thread1` dan `thread2`) selesai dijalankan.
+
+---
+
+### 2. Nilai akhir variabel `g`
+
+➡️ **Penjelasan:**
+Dalam kode pertama (tanpa `synchronize` atau `enter/leave`), kedua thread menggunakan variabel global yang sama (`g`).
+Karena keduanya berjalan bersamaan dan tidak ada proteksi critical section, hasil akhirnya **tidak bisa diprediksi (race condition)**.
+
+➡️ **Perkiraan hasil:**
+
+* Thread 1 menaikkan `g` sebanyak 20 kali.
+* Thread 2 menaikkan `g` sebanyak 12 kali.
+  Secara teori, nilai akhir **harusnya 32** (jika berjalan berurutan).
+  Namun karena *race condition*, nilai aktual bisa **lebih kecil dari 32**, tergantung urutan eksekusi CPU.
+
+---
+
+### 3. Setelah ditambahkan `synchronize` atau `enter/leave`
+
+➡️ **Penjelasan:**
+Penambahan `synchronize` atau blok `enter` dan `leave` membuat kedua thread **tidak bisa mengakses variabel `g` secara bersamaan**.
+Artinya, hanya satu thread yang berada di dalam *critical region* pada suatu waktu.
+
+➡️ **Nilai akhir `g`:**
+Sekarang nilai akhirnya **selalu 32**, karena akses ke `g` sudah terlindungi.
+
+---
+
+### 4. Pertanyaan analisis (halaman 56–57)
+
+#### a. Jelaskan tujuan utama praktikum ini!
+
+➡️ **Jawaban:**
+Tujuan utama praktikum ini adalah untuk memahami **konsep Critical Region** dan **sinkronisasi antar proses atau thread** dalam sistem operasi, serta bagaimana penggunaan mekanisme seperti `synchronize`, `enter`, dan `leave` mencegah terjadinya *race condition* saat dua atau lebih proses mengakses data bersama.
+
+---
+
+#### b. Mengapa kita menggunakan variabel global (`g`) yang sama pada dua thread?
+
+➡️ **Jawaban:**
+Karena percobaan ini bertujuan untuk menunjukkan bagaimana dua proses **berbagi sumber daya (shared resource)** secara bersamaan. Variabel global digunakan agar kedua thread mengakses data yang sama, sehingga efek *race condition* dapat diamati.
+
+---
+
+#### c. Apakah kita sudah menggunakan variabel lokal, dan apakah hasilnya berbeda?
+
+➡️ **Jawaban:**
+Belum. Jika menggunakan variabel lokal di masing-masing thread, maka hasilnya **tidak akan saling mempengaruhi**, karena tiap thread memiliki salinan variabel sendiri.
+Akibatnya, *race condition* tidak terjadi, dan hasilnya akan **selalu sesuai loop masing-masing thread**.
+
+---
+
+#### d. Modifikasi dengan `enter` dan `leave`:
+
+➡️ **Penjelasan:**
+Perintah `enter` dan `leave` digunakan untuk **melindungi critical section** sehingga hanya satu proses yang boleh masuk pada satu waktu.
+Dengan begitu, variabel global `g` tidak akan diakses bersamaan.
+
+➡️ **Kesimpulan:**
+Setelah menggunakan `enter` dan `leave`, nilai akhir `g` menjadi **stabil dan sesuai perkiraan (32)** tanpa terjadi konflik.
+
+---
+
+## 🔹 **Bagian 2: Deadlock**
+
+### 1. Gambarlah resource allocation graph dan jelaskan bagaimana deadlock dapat terjadi.
+
+➡️ **Jawaban Singkat:**
+Misal ada 4 proses (P1–P4) dan 4 sumber daya (R1–R4).
+Jika setiap proses memegang satu sumber daya dan **meminta sumber daya lain yang dipegang proses lain**, maka terbentuk siklus:
+
+```
+P1 → R1 → P2 → R2 → P3 → R3 → P4 → R4 → P1
+```
+
+Siklus ini menandakan bahwa semua proses **menunggu sumber daya** yang tidak akan pernah dilepas → terjadilah **deadlock**.
+
+---
+
+### 2. Program `Deadlocks`
+
+```
+Program Deadlocks
+    while true
+        n = n + 1
+    wend
+end
+```
+
+➡️ **Penjelasan:**
+Kode ini membuat proses yang berjalan terus-menerus tanpa akhir (infinite loop).
+Ketika beberapa proses seperti ini berjalan bersamaan dan meminta sumber daya yang sama tanpa dilepaskan, sistem akan **terjebak dalam kondisi deadlock**.
+
+---
+
+### 3. Pertanyaan analisis
+
+#### a. Berapa proses yang mengalami deadlock?
+
+➡️ **Jawaban:**
+Jumlah proses yang mengalami deadlock tergantung konfigurasi simulator.
+Pada percobaan dengan 4 proses dan 4 sumber daya, **biasanya semua proses (P1–P4)** akan mengalami deadlock karena masing-masing menunggu sumber daya milik proses lain.
+
+---
+
+#### b. Apa kesimpulan hasil simulasi deadlock?
+
+➡️ **Jawaban:**
+Deadlock terjadi ketika beberapa proses **saling menunggu sumber daya** yang tidak pernah dilepaskan.
+Tidak ada proses yang dapat melanjutkan eksekusi karena kondisi saling ketergantungan melingkar (*circular wait*).
+Kesimpulannya, sistem perlu mekanisme seperti **resource allocation policy, semaphore, atau deadlock prevention** agar hal ini tidak terjadi.
+
+---
+
+## 🔹 **Bagian 3: Post Test (Hal. 58)**
+
+### 1. Jalankan program dan screenshot setiap prosesnya!
+
+➡️ *(Jawaban diisi dengan hasil praktikum dan tangkapan layar simulator)*
+
+### 2. Jelaskan dan berikan kesimpulan terhadap hasil simulasi deadlock yang telah dilakukan!
+
+➡️ **Jawaban:**
+Hasil simulasi menunjukkan bahwa ketika beberapa proses saling memegang dan menunggu sumber daya milik proses lain tanpa ada yang melepaskan, sistem memasuki **kondisi deadlock**.
+Tidak ada proses yang bisa melanjutkan eksekusi karena terjebak dalam siklus ketergantungan.
+Kesimpulannya, sistem operasi perlu menerapkan **pencegahan (prevention)**, **penghindaran (avoidance)**, atau **deteksi dan pemulihan (detection & recovery)** untuk mengatasi masalah ini.
+
