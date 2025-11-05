@@ -1,0 +1,191 @@
+Baik, jadi tugas pada gambar itu berisi **Langkah Praktikum dan Post Test** dari mata kuliah **Pemrograman Berorientasi Objek (PBO)**.
+Aku bantu buatkan semua langkah dan kodenya secara lengkap ya.
+Berikut implementasinya dalam bahasa **Java**, sesuai format tugas:
+
+---
+
+## 🧩 **Langkah Praktikum**
+
+### 1️⃣–3️⃣. Class `Mahasiswa`
+
+```java
+public class Mahasiswa {
+    private String nim;
+    private String nama;
+
+    public Mahasiswa() {
+    }
+
+    public Mahasiswa(String nim, String nama) {
+        this.nim = nim;
+        this.nama = nama;
+    }
+
+    public String getNim() {
+        return nim;
+    }
+
+    public void setNim(String nim) {
+        this.nim = nim;
+    }
+
+    public String getNama() {
+        return nama;
+    }
+
+    public void setNama(String nama) {
+        this.nama = nama;
+    }
+}
+```
+
+---
+
+### 4️⃣. Class `HM` (turunan dari `Mahasiswa`)
+
+```java
+public class HM extends Mahasiswa {
+    private String jabatan;
+    private String programKerja;
+
+    public HM(String nim, String nama, String jabatan, String programKerja) {
+        super(nim, nama);
+        this.jabatan = jabatan;
+        this.programKerja = programKerja;
+    }
+
+    public void tampilInfoHM() {
+        System.out.println("HM - " + getNama() + " (" + getNim() + ")");
+        System.out.println("Jabatan: " + jabatan);
+        System.out.println("Program Kerja: " + programKerja);
+    }
+
+    public void rapat() {
+        System.out.println(getNama() + " sedang memimpin rapat HM.");
+    }
+
+    public void evaluasiProgram() {
+        System.out.println(getNama() + " melakukan evaluasi program kerja.");
+    }
+}
+```
+
+---
+
+### 5️⃣. Class `KelompokStudi` (turunan dari `Mahasiswa`)
+
+```java
+public class KelompokStudi extends Mahasiswa {
+    private String bidang;
+    private String proyek;
+
+    public KelompokStudi(String nim, String nama, String bidang, String proyek) {
+        super(nim, nama);
+        this.bidang = bidang;
+        this.proyek = proyek;
+    }
+
+    public void tampilInfoKS() {
+        System.out.println("Kelompok Studi - " + getNama() + " (" + getNim() + ")");
+        System.out.println("Bidang: " + bidang);
+        System.out.println("Proyek: " + proyek);
+    }
+
+    public void riset() {
+        System.out.println(getNama() + " sedang melakukan riset di bidang " + bidang + ".");
+    }
+
+    public void presentasi() {
+        System.out.println(getNama() + " mempresentasikan proyek: " + proyek);
+    }
+}
+```
+
+---
+
+### 6️⃣–7️⃣. Class `Main` (implementasi dan efek polymorphism)
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        HM hm = new HM("2400018190", "Khansa Farras", "Ketua HM", "Pelatihan Kepemimpinan");
+        KelompokStudi ks = new KelompokStudi("2400018191", "Alya Zahra", "AI & Data Science", "Pembuatan Chatbot");
+
+        // Menampilkan info dan efek polymorphism
+        Mahasiswa[] daftar = new Mahasiswa[2];
+        daftar[0] = hm;
+        daftar[1] = ks;
+
+        for (Mahasiswa m : daftar) {
+            System.out.println("---------------------------");
+            if (m instanceof HM) {
+                HM h = (HM) m;
+                h.tampilInfoHM();
+                h.rapat();
+                h.evaluasiProgram();
+            } else if (m instanceof KelompokStudi) {
+                KelompokStudi k = (KelompokStudi) m;
+                k.tampilInfoKS();
+                k.riset();
+                k.presentasi();
+            }
+        }
+    }
+}
+```
+
+---
+
+## 🧾 **POST TEST**
+
+### Soal 1–2: Program Polymorphism Bertema Pembayaran
+
+```java
+// Superclass
+abstract class Pembayaran {
+    public abstract void proses(double total);
+}
+
+// Subclass 1
+class Tunai extends Pembayaran {
+    public void proses(double total) {
+        System.out.println("Pembayaran Tunai: Total Rp" + total);
+        System.out.println("Kembalian diberikan jika ada.");
+    }
+}
+
+// Subclass 2
+class Kartu extends Pembayaran {
+    public void proses(double total) {
+        System.out.println("Pembayaran Kartu: Total Rp" + total);
+        System.out.println("Biaya administrasi 2% = Rp" + (total * 0.02));
+        System.out.println("Total dibayar = Rp" + (total + total * 0.02));
+    }
+}
+
+// Subclass 3
+class DompetDigital extends Pembayaran {
+    public void proses(double total) {
+        System.out.println("Pembayaran Dompet Digital: Total Rp" + total);
+        System.out.println("Potongan biaya layanan 5% = Rp" + (total * 0.05));
+        System.out.println("Total dibayar = Rp" + (total - total * 0.05));
+    }
+}
+
+// Tester
+public class TestPembayaran {
+    public static void main(String[] args) {
+        Pembayaran[] bayar = new Pembayaran[3];
+        bayar[0] = new Tunai();
+        bayar[1] = new Kartu();
+        bayar[2] = new DompetDigital();
+
+        double total = 100000;
+
+        for (Pembayaran p : bayar) {
+            System.out.println("\n==========================");
+            p.proses(total); // efek polymorphism
+        }
+    }
+}
+```
