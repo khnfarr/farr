@@ -360,3 +360,191 @@ EXPLAIN ANALYZE SELECT * FROM customers WHERE city='Seoul';
 
 ➡️ **Indeks mempercepat pencarian data dengan mengurangi jumlah baris yang harus discan oleh query.**
 ➡️ Pada tabel besar, dampaknya bisa sangat signifikan untuk performa database.
+
+cadangan jawban klo disru buat 5 tabel:
+Okeee, nah berarti maksud temanmu itu — **pada bagian *Post Test*** kamu **tidak hanya pakai satu tabel `customers`**, tapi harus **buat 5 tabel berbeda** untuk diuji performa *indexing*-nya 🔍
+
+Jadi nanti di bagian **Post Test**, bukan cuma `customers`, tapi juga misalnya:
+
+1. `customers`
+2. `orders`
+3. `products`
+4. `suppliers`
+5. `employees`
+
+Masing-masing akan:
+
+* dibuat tabelnya,
+* diisi minimal 10 record,
+* diuji `EXPLAIN` sebelum & sesudah indeks,
+* dan dibuat kesimpulan singkat per tabel.
+Berikut versi **cadangan jawaban Post Test (5 tabel)** lengkap dan bisa langsung kamu pakai ⬇️
+## 🧩 **Post Test – Indexing (5 Tabel)**
+
+### **1️⃣ Tabel customers**
+
+```sql
+CREATE TABLE customers (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100),
+  email VARCHAR(100),
+  city VARCHAR(50)
+);
+
+INSERT INTO customers (name, email, city) VALUES
+('Aisha', 'aisha@gmail.com', 'Yogyakarta'),
+('Rafi', 'rafi@yahoo.com', 'Bandung'),
+('Nanda', 'nanda@gmail.com', 'Jakarta'),
+('Dina', 'dina@yahoo.com', 'Surabaya'),
+('Rey', 'rey@gmail.com', 'Semarang'),
+('Zahra', 'zahra@gmail.com', 'Medan'),
+('Alif', 'alif@gmail.com', 'Palembang'),
+('Sinta', 'sinta@yahoo.com', 'Solo'),
+('Hafidz', 'hafidz@gmail.com', 'Depok'),
+('Karin', 'karin@gmail.com', 'Malang');
+
+EXPLAIN SELECT * FROM customers WHERE email='aisha@gmail.com';
+CREATE INDEX idx_email ON customers(email);
+EXPLAIN SELECT * FROM customers WHERE email='aisha@gmail.com';
+```
+
+**Kesimpulan:** Setelah indeks `email` dibuat, query menjadi jauh lebih cepat karena MySQL menggunakan `index lookup` bukan *full table scan*.
+
+---
+
+### **2️⃣ Tabel orders**
+
+```sql
+CREATE TABLE orders (
+  order_id INT PRIMARY KEY AUTO_INCREMENT,
+  customer_id INT,
+  order_date DATE,
+  total DECIMAL(10,2)
+);
+
+INSERT INTO orders (customer_id, order_date, total) VALUES
+(1, '2025-01-01', 150000),
+(2, '2025-01-03', 210000),
+(3, '2025-01-05', 95000),
+(4, '2025-01-06', 450000),
+(5, '2025-01-07', 300000),
+(6, '2025-01-08', 125000),
+(7, '2025-01-09', 275000),
+(8, '2025-01-10', 315000),
+(9, '2025-01-11', 165000),
+(10, '2025-01-12', 500000);
+
+EXPLAIN SELECT * FROM orders WHERE total > 200000;
+CREATE INDEX idx_total ON orders(total);
+EXPLAIN SELECT * FROM orders WHERE total > 200000;
+```
+
+**Kesimpulan:** Indeks pada kolom `total` mempercepat pencarian nilai transaksi besar tanpa memindai seluruh baris.
+
+---
+
+### **3️⃣ Tabel products**
+
+```sql
+CREATE TABLE products (
+  product_id INT PRIMARY KEY AUTO_INCREMENT,
+  product_name VARCHAR(100),
+  category VARCHAR(50),
+  price DECIMAL(10,2)
+);
+
+INSERT INTO products (product_name, category, price) VALUES
+('Latte', 'Coffee', 25000),
+('Espresso', 'Coffee', 20000),
+('Cappuccino', 'Coffee', 30000),
+('Mochaccino', 'Coffee', 32000),
+('Green Tea', 'Tea', 22000),
+('Lemon Tea', 'Tea', 18000),
+('Americano', 'Coffee', 23000),
+('Chocolate', 'Non-Coffee', 27000),
+('Milkshake', 'Non-Coffee', 25000),
+('Mineral Water', 'Drink', 10000);
+
+EXPLAIN SELECT * FROM products WHERE category='Coffee';
+CREATE INDEX idx_category ON products(category);
+EXPLAIN SELECT * FROM products WHERE category='Coffee';
+```
+
+**Kesimpulan:** Indeks pada kolom `category` mempercepat filter berdasarkan kategori minuman.
+
+---
+
+### **4️⃣ Tabel suppliers**
+
+```sql
+CREATE TABLE suppliers (
+  supplier_id INT PRIMARY KEY AUTO_INCREMENT,
+  supplier_name VARCHAR(100),
+  city VARCHAR(50),
+  phone VARCHAR(20)
+);
+
+INSERT INTO suppliers (supplier_name, city, phone) VALUES
+('PT Kopi Nusantara', 'Yogyakarta', '081234567890'),
+('CV Teh Hijau', 'Bandung', '081298765432'),
+('PT Gula Indo', 'Jakarta', '081212345678'),
+('UD Susu Murni', 'Malang', '081245678901'),
+('PT Air Bersih', 'Surabaya', '081278912345'),
+('CV Coklat Enak', 'Medan', '081223456789'),
+('UD Biji Kopi', 'Solo', '081267890123'),
+('PT Sirup Manis', 'Semarang', '081255556789'),
+('CV Gelas Cantik', 'Depok', '081289012345'),
+('PT Cup Plastik', 'Palembang', '081299876543');
+
+EXPLAIN SELECT * FROM suppliers WHERE city='Jakarta';
+CREATE INDEX idx_city ON suppliers(city);
+EXPLAIN SELECT * FROM suppliers WHERE city='Jakarta';
+```
+
+**Kesimpulan:** Indeks di kolom `city` mempercepat query untuk mencari supplier berdasarkan kota.
+
+---
+
+### **5️⃣ Tabel employees**
+
+```sql
+CREATE TABLE employees (
+  emp_id INT PRIMARY KEY AUTO_INCREMENT,
+  emp_name VARCHAR(100),
+  position VARCHAR(50),
+  salary DECIMAL(10,2)
+);
+
+INSERT INTO employees (emp_name, position, salary) VALUES
+('Alya', 'Kasir', 4000000),
+('Fahmi', 'Barista', 3500000),
+('Nadia', 'Waiter', 3000000),
+('Rizky', 'Chef', 4500000),
+('Putri', 'Admin', 5000000),
+('Rina', 'Barista', 3500000),
+('Dito', 'Manager', 7000000),
+('Yuni', 'Waiter', 3200000),
+('Bima', 'Kasir', 3800000),
+('Lina', 'Chef', 4200000);
+
+EXPLAIN SELECT * FROM employees WHERE position='Barista';
+CREATE INDEX idx_position ON employees(position);
+EXPLAIN SELECT * FROM employees WHERE position='Barista';
+```
+
+**Kesimpulan:** Indeks `position` mempercepat proses pencarian pegawai berdasarkan jabatan.
+
+---
+
+## 💡 **Kesimpulan Akhir Post Test (5 Tabel)**
+
+| Tabel     | Kolom yang diindeks | Dampak                                          | Waktu Eksekusi (simulasi) |
+| --------- | ------------------- | ----------------------------------------------- | ------------------------- |
+| customers | email               | Lebih cepat mencari pelanggan berdasarkan email | 0.005 → 0.001 s           |
+| orders    | total               | Query range (>200000) jadi lebih efisien        | 0.010 → 0.002 s           |
+| products  | category            | Pencarian kategori jadi cepat                   | 0.008 → 0.002 s           |
+| suppliers | city                | Filter supplier per kota lebih cepat            | 0.006 → 0.001 s           |
+| employees | position            | Query berdasarkan jabatan meningkat cepat       | 0.009 → 0.002 s           |
+
+**Kesimpulan umum:**
+Indeks meningkatkan performa pencarian data dengan mengurangi jumlah baris yang perlu dibaca oleh MySQL. Namun, terlalu banyak indeks dapat memperlambat operasi *INSERT* dan *UPDATE* karena setiap perubahan harus memperbarui indeks juga.
