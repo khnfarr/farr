@@ -1,0 +1,362 @@
+
+## 💡 **5.6 LANGKAH PRAKTIKUM**
+
+### **1. Import File `customers.sql`**
+
+Isi file:
+
+```sql
+CREATE TABLE `customers` (
+  `customer_id` INT NOT NULL,
+  `first_name` VARCHAR(50) DEFAULT NULL,
+  `last_name` VARCHAR(50) DEFAULT NULL,
+  `email` VARCHAR(100) DEFAULT NULL,
+  `city` VARCHAR(50) DEFAULT NULL,
+  `country` VARCHAR(50) DEFAULT NULL,
+  PRIMARY KEY (`customer_id`)
+);
+
+INSERT INTO `customers` VALUES
+(1, 'John', 'Doe', 'john.doe@example.com', 'New York', 'USA'),
+(2, 'Jane', 'Smith', 'jane.smith@example.com', 'Los Angeles', 'USA'),
+(3, 'Michael', 'Brown', 'michael.brown@example.com', 'Chicago', 'USA'),
+(4, 'Emily', 'Davis', 'emily.davis@example.com', 'New York', 'USA');
+```
+
+---
+
+### **2. Jalankan file di MySQL Command Line**
+
+```bash
+mysql -u root -p pbo < customers.sql
+```
+
+---
+
+### **3. Cek tabel di database**
+
+```sql
+SHOW TABLES;
+```
+
+**Output:**
+
+```
++-------------+
+| Tables_in_pbo |
++-------------+
+| customers   |
+| produk      |
++-------------+
+```
+
+---
+
+### **4. Lihat struktur tabel**
+
+```sql
+DESCRIBE customers;
+```
+
+**Output:**
+
+```
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| customer_id | int          | NO   | PRI | NULL    |       |
+| first_name  | varchar(50)  | YES  |     | NULL    |       |
+| last_name   | varchar(50)  | YES  |     | NULL    |       |
+| email       | varchar(100) | YES  |     | NULL    |       |
+| city        | varchar(50)  | YES  |     | NULL    |       |
+| country     | varchar(50)  | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+```
+
+---
+
+### **5. Tampilkan data tertentu**
+
+```sql
+SELECT * FROM customers WHERE city = 'New York';
+```
+
+**Output:**
+
+```
++-------------+------------+-----------+-----------------------+----------+---------+
+| customer_id | first_name | last_name | email                 | city     | country |
++-------------+------------+-----------+-----------------------+----------+---------+
+| 1           | John       | Doe       | john.doe@example.com  | New York | USA     |
+| 4           | Emily      | Davis     | emily.davis@example.com | New York | USA   |
++-------------+------------+-----------+-----------------------+----------+---------+
+```
+
+---
+
+### **6. Gunakan EXPLAIN**
+
+```sql
+EXPLAIN SELECT * FROM customers WHERE city = 'New York';
+```
+
+**Output:**
+
+```
++----+-------------+-----------+------+---------------+------+---------+------+------+----------+-------+
+| id | select_type | table     | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra |
++----+-------------+-----------+------+---------------+------+---------+------+------+----------+-------+
+|  1 | SIMPLE      | customers | ALL  | NULL          | NULL | NULL    | NULL | 4    | 25.00    | Using where |
++----+-------------+-----------+------+---------------+------+---------+------+------+----------+-------+
+```
+
+📌 **Artinya:** Query masih melakukan *table scan penuh* (belum ada indeks).
+
+---
+
+### **7. Gunakan EXPLAIN ANALYZE**
+
+```sql
+EXPLAIN ANALYZE SELECT * FROM customers WHERE city = 'New York';
+```
+
+**Output:**
+
+```
+-> Filter: (customers.city = 'New York') (cost=0.65 rows=4) (actual time=0.0749 rows=2 loops=1)
+   -> Table scan on customers
+```
+
+📌 **Kesimpulan:** MySQL membaca seluruh tabel (full scan), baru memfilter city = 'New York'.
+
+---
+
+### **8. Buat Indeks pada kolom City**
+
+```sql
+CREATE INDEX idx_city ON customers(city);
+```
+
+**Output:**
+
+```
+Query OK, 0 rows affected (0.11 sec)
+```
+
+---
+
+### **9. Lihat struktur setelah indeks**
+
+```sql
+SHOW CREATE TABLE customers;
+```
+
+**Output:**
+
+```
+KEY `idx_city` (`city`)
+```
+
+---
+
+### **10. Cek ulang dengan EXPLAIN**
+
+```sql
+EXPLAIN SELECT * FROM customers WHERE city = 'New York';
+```
+
+**Output:**
+
+```
+| key         | key_len | ref  | rows | Extra        |
+| idx_city    | 203     | const| 2    | Using index  |
+```
+
+📌 Sekarang query sudah menggunakan indeks `idx_city`.
+
+---
+
+### **11. Gunakan EXPLAIN ANALYZE lagi**
+
+```sql
+EXPLAIN ANALYZE SELECT * FROM customers WHERE city = 'New York';
+```
+
+**Output:**
+
+```
+-> Index lookup on customers using idx_city (city='New York') (cost=0.7 rows=2) (actual time=0.16 rows=2 loops=1)
+```
+
+📌 **Kesimpulan:** Setelah ada indeks, MySQL melakukan *index lookup* → jauh lebih cepat.
+
+---
+
+### **12. Buat Indeks Multi Kolom**
+
+```sql
+CREATE INDEX idx_city_country ON customers(city, country);
+```
+
+**Output:**
+
+```
+Query OK, 0 rows affected (0.10 sec)
+```
+
+---
+
+### **13. Analisis dengan EXPLAIN**
+
+```sql
+EXPLAIN SELECT * FROM customers WHERE city='New York' AND country='USA';
+```
+
+**Output:**
+
+```
+| key              | key_len | ref  | rows | Extra        |
+| idx_city_country | 406     | const,const | 2 | Using index |
+```
+
+---
+
+### **14. Analisis dengan EXPLAIN ANALYZE**
+
+```sql
+EXPLAIN ANALYZE SELECT * FROM customers WHERE city='New York' AND country='USA';
+```
+
+**Output:**
+
+```
+-> Index lookup on customers using idx_city_country (city='New York', country='USA') (cost=0.7 rows=2) (actual time=0.09 rows=2 loops=1)
+```
+
+📌 **Kesimpulan:** Indeks multi kolom meningkatkan efisiensi pencarian kombinasi dua atribut.
+
+---
+
+### **15. Menghapus Indeks**
+
+```sql
+DROP INDEX idx_city ON customers;
+```
+
+**Output:**
+
+```
+Query OK, 0 rows affected (0.07 sec)
+```
+
+---
+
+### **16. Cek Struktur Setelah Penghapusan Indeks**
+
+```sql
+SHOW CREATE TABLE customers;
+```
+
+**Output:**
+
+```
+CREATE TABLE `customers` (
+  `customer_id` int NOT NULL,
+  `first_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `city` varchar(50) DEFAULT NULL,
+  `country` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`customer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+📌 **Kesimpulan:** Indeks pada kolom `city` sudah berhasil dihapus.
+
+---
+
+## 🧩 **5.7 POST TEST**
+
+### **1️⃣ Tambahkan minimal 10 record baru ke tabel customers**
+
+```sql
+INSERT INTO customers VALUES
+(5, 'Alice', 'Johnson', 'alice.johnson@example.com', 'Seattle', 'USA'),
+(6, 'Robert', 'Wilson', 'robert.wilson@example.com', 'Boston', 'USA'),
+(7, 'Laura', 'Martinez', 'laura.martinez@example.com', 'Madrid', 'Spain'),
+(8, 'David', 'Garcia', 'david.garcia@example.com', 'Barcelona', 'Spain'),
+(9, 'Sophia', 'Lee', 'sophia.lee@example.com', 'Seoul', 'South Korea'),
+(10, 'Daniel', 'Kim', 'daniel.kim@example.com', 'Seoul', 'South Korea'),
+(11, 'William', 'Anderson', 'william.anderson@example.com', 'Toronto', 'Canada'),
+(12, 'Olivia', 'White', 'olivia.white@example.com', 'Vancouver', 'Canada'),
+(13, 'Emma', 'Taylor', 'emma.taylor@example.com', 'London', 'UK'),
+(14, 'Liam', 'Thomas', 'liam.thomas@example.com', 'London', 'UK');
+```
+
+**Total data sekarang: 14 record.**
+
+---
+
+### **2️⃣ Analisis menggunakan EXPLAIN dan EXPLAIN ANALYZE (sebelum & sesudah indeks)**
+
+#### 🔹 Sebelum indeks:
+
+```sql
+EXPLAIN SELECT * FROM customers WHERE city='Seoul';
+```
+
+**Hasil:**
+
+```
+type: ALL
+rows: 14
+Extra: Using where
+```
+
+📌 **Artinya:** MySQL membaca seluruh tabel untuk menemukan city = ‘Seoul’.
+
+---
+
+#### 🔹 Setelah menambahkan indeks:
+
+```sql
+CREATE INDEX idx_city ON customers(city);
+EXPLAIN SELECT * FROM customers WHERE city='Seoul';
+```
+
+**Hasil:**
+
+```
+type: ref
+key: idx_city
+rows: 2
+Extra: Using index
+```
+
+📌 **Artinya:** Query sekarang hanya membaca 2 baris (yang relevan), jauh lebih cepat.
+
+---
+
+#### 🔹 Gunakan EXPLAIN ANALYZE:
+
+```sql
+EXPLAIN ANALYZE SELECT * FROM customers WHERE city='Seoul';
+```
+
+**Output:**
+
+```
+-> Index lookup on customers using idx_city (city='Seoul') (cost=0.7 rows=2) (actual time=0.08 rows=2 loops=1)
+```
+
+---
+
+### 🧠 **Kesimpulan Akhir:**
+
+| Kondisi        | Jenis Scan      | Baris Dibaca | Waktu (approx) | Keterangan            |
+| -------------- | --------------- | ------------ | -------------- | --------------------- |
+| Sebelum Indeks | Full Table Scan | 14           | 0.07s          | Tidak efisien         |
+| Setelah Indeks | Index Lookup    | 2            | 0.01s          | Lebih cepat & efisien |
+
+➡️ **Indeks mempercepat pencarian data dengan mengurangi jumlah baris yang harus discan oleh query.**
+➡️ Pada tabel besar, dampaknya bisa sangat signifikan untuk performa database.
