@@ -1,0 +1,173 @@
+Yup, betul banget 👍
+kode yang kamu kirim ini adalah versi kedua dari program Algoritma Bankir (Banker’s Algorithm) juga — fungsinya masih sama seperti kode pertama, tapi mungkin digunakan untuk kasus uji kedua (kasus 2).
+
+Supaya kamu makin paham, aku jelaskan secara terstruktur dan ringkas, apa yang dilakukan program ini dan bagaimana cara kerjanya👇
+
+
+---
+
+🧠 Tujuan Program
+
+Program ini digunakan untuk mengecek apakah sistem dalam keadaan aman (safe state) setelah satu proses meminta tambahan sumber daya.
+Jika aman → request diberikan.
+Jika tidak aman → request ditolak karena akan menyebabkan deadlock.
+
+
+---
+
+⚙ Penjelasan Logika Program
+
+1. Struktur file
+
+struct file {
+    int all[10];  // jumlah sumber daya yang sedang dialokasikan untuk proses
+    int max[10];  // kebutuhan maksimum sumber daya proses
+    int need[10]; // kebutuhan sisa (max - all)
+    int flag;     // status proses: 0 = belum selesai, 1 = sudah selesai
+};
+
+Struktur ini menyimpan informasi tiap proses.
+
+
+---
+
+2. Input Data Awal
+
+cin >> n; // jumlah proses
+cin >> r; // jumlah jenis sumber daya
+
+Lalu untuk setiap proses:
+
+Input alokasi saat ini
+
+Input kebutuhan maksimum
+
+
+cin >> f[i].all[j];
+cin >> f[i].max[j];
+
+Dan sumber daya yang tersedia di sistem:
+
+for(i = 0; i < r; i++)
+    cin >> avail[i];
+
+
+---
+
+3. Input Permintaan Baru (Request)
+
+cin >> id; // ID proses yang meminta tambahan
+cin >> request[i]; // jumlah tiap sumber daya yang diminta
+
+
+---
+
+4. Validasi Permintaan
+
+Sebelum memberi sumber daya, sistem memeriksa dua hal:
+
+1️⃣ Apakah permintaan lebih besar dari kebutuhan maksimum
+
+if(request[i] > f[id].max[i] - f[id].all[i])
+
+2️⃣ Apakah permintaan lebih besar dari sumber daya yang tersedia
+
+if(request[i] > avail[i])
+
+Jika salah satu kondisi itu benar → permintaan ditolak atau harus menunggu.
+
+
+---
+
+5. Simulasi Pemberian Sumber Daya
+
+Jika valid, sistem sementara memberikan sumber daya:
+
+f[id].all[i] += request[i];
+avail[i] -= request[i];
+
+Lalu hitung ulang kebutuhan (need):
+
+f[i].need[j] = f[i].max[j] - f[i].all[j];
+
+
+---
+
+6. Pengecekan “Safe State” (Algoritma Bankir)
+
+Program mencoba menjalankan proses satu per satu:
+
+while(cnt != n) {
+    safe = false;
+    for(j = 0; j < n; j++) {
+        if(f[j].flag == 0) {
+            int canRun = 1;
+            for(p = 0; p < r; p++) {
+                if(f[j].need[p] > avail[p]) {
+                    canRun = 0;
+                    break;
+                }
+            }
+
+Jika need ≤ avail, artinya proses bisa dijalankan. Setelah selesai, proses “mengembalikan” sumber daya ke sistem:
+
+for(k = 0; k < r; k++)
+    avail[k] += f[j].all[k];
+
+Jika tidak ada proses yang bisa jalan → sistem tidak aman (deadlock).
+
+
+---
+
+7. Hasil Akhir
+
+Jika semua proses bisa diselesaikan:
+
+cout << "\nSISTEM DALAM KEADAAN AMAN\n";
+cout << "Safe Sequence adalah - (P0 P1 P2 ...)\n";
+
+Jika tidak → muncul:
+
+REQUEST NOT GRANTED -- DEADLOCK OCCURRED
+
+
+---
+
+📊 Tabel Akhir Output
+
+Program menampilkan:
+
+Process | Allocation | Max | Need
+--------------------------------------
+P0      | 1 2 2      | 3 3 2   | 2 1 0
+P1      | 2 0 0      | 2 2 2   | 0 2 2
+
+Tabel ini menunjukkan kondisi akhir dari setiap proses setelah permintaan diperiksa.
+
+
+---
+
+📘 Kesimpulan Analisis
+
+Aspek	Penjelasan
+
+Nama Algoritma	Banker’s Algorithm
+Tujuan	Menghindari deadlock dengan memastikan sistem tetap dalam keadaan aman sebelum memberi sumber daya baru
+Cara Kerja	Simulasi pemberian sumber daya, lalu cek apakah semua proses bisa selesai
+Output utama	Safe sequence (urutan aman proses) atau pesan deadlock
+Kasus kedua	Mungkin digunakan untuk pengujian berbeda dari kasus pertama (misal nilai input berbeda, hasil bisa deadlock atau aman)
+
+
+
+---
+
+Kalau kamu mau, aku bisa bantu:
+
+1. 💡 Buat contoh input-output lengkap biar kamu bisa uji langsung di compiler
+
+
+2. 📊 Atau bantu gambar tabel per langkah (allocation, need, available) biar kamu paham alurnya visual
+
+
+
+Kamu mau yang mana?
