@@ -1,0 +1,142 @@
+#include <iostream>
+using namespace std;
+
+struct file {
+    int all[10];
+    int max[10];
+    int need[10];
+    int flag;
+};
+
+int main() {
+    struct file f[10];
+    int avail[10], seq[10];
+    int request[10]; 
+    int i, j, k, p, n, r, id;
+    int cnt = 0, fl = 0;
+    bool safe;
+
+    cout << "Masukkan jumlah proses: ";
+    cin >> n;
+
+    cout << "Masukkan jumlah sumber daya: ";
+    cin >> r;
+
+    // ==== Contoh data yang akan menyebabkan DEADLOCK ====
+    // (Kamu bisa juga isi manual lewat input, tapi ini contoh yang umum)
+    // Misal 3 proses, 3 resource.
+    // P0: Alokasi 0 1 0 | Max 7 5 3
+    // P1: Alokasi 2 0 0 | Max 3 2 2
+    // P2: Alokasi 3 0 3 | Max 9 0 4
+    // Available = 0 1 0
+    // Request: PID=1, request 1 0 2 ? akan menimbulkan deadlock.
+    // ================================================
+
+    for(i = 0; i < n; i++) {
+        cout << "\nMasukkan detail untuk P" << i << endl;
+
+        cout << "Masukkan alokasi: ";
+        for(j = 0; j < r; j++)
+            cin >> f[i].all[j];
+
+        cout << "Masukkan Maks: ";
+        for(j = 0; j < r; j++)
+            cin >> f[i].max[j];
+
+        f[i].flag = 0;
+    }
+
+    cout << "\nMasukkan Sumber Daya yang Tersedia: ";
+    for(i = 0; i < r; i++)
+        cin >> avail[i];
+
+    cout << "\nMasukkan Detail Permintaan Baru –" << endl;
+    cout << "Masukkan PID: ";
+    cin >> id;
+
+    cout << "Masukkan Permintaan untuk Sumber Daya: ";
+    for(i = 0; i < r; i++)
+        cin >> request[i];
+
+    // ---- Validasi permintaan ----
+    for(i = 0; i < r; i++) {
+        if(request[i] > f[id].max[i] - f[id].all[i]) {
+            cout << "\nREQUEST MELEBIHI KEBUTUHAN MAKSIMUM! DITOLAK.\n";
+            return 0;
+        }
+        if(request[i] > avail[i]) {
+            cout << "\nREQUEST MELEBIHI AVAILABLE! PROSES HARUS MENUNGGU.\n";
+            return 0;
+        }
+    }
+
+    // ---- Update alokasi sementara ----
+    for(i = 0; i < r; i++) {
+        f[id].all[i] += request[i];
+        avail[i] -= request[i];
+    }
+
+    // ---- Hitung Need ----
+    for(i = 0; i < n; i++)
+        for(j = 0; j < r; j++)
+            f[i].need[j] = f[i].max[j] - f[i].all[j];
+
+    // ---- Algoritma Bankir ----
+    while(cnt != n) {
+        safe = false;
+        for(j = 0; j < n; j++) {
+            if(f[j].flag == 0) {
+                int canRun = 1;
+                for(p = 0; p < r; p++) {
+                    if(f[j].need[p] > avail[p]) {
+                        canRun = 0;
+                        break;
+                    }
+                }
+                if(canRun) {
+                    cout << "P" << j << " dikunjungi (";
+                    for(k = 0; k < r; k++)
+                        cout << avail[k] + f[j].all[k] << " ";
+                    cout << ")\n";
+
+                    seq[fl++] = j;
+                    f[j].flag = 1;
+                    cnt++;
+                    safe = true;
+
+                    for(k = 0; k < r; k++)
+                        avail[k] += f[j].all[k];
+                }
+            }
+        }
+        if(!safe) {
+            cout << "\nREQUEST NOT GRANTED -- DEADLOCK OCCURRED\n";
+            return 0;
+        }
+    }
+
+    // ---- Kalau ternyata aman ----
+    cout << "\nSISTEM DALAM KEADAAN AMAN\n";
+    cout << "Safe Sequence adalah - (";
+    for(i = 0; i < fl; i++)
+        cout << "P" << seq[i] << " ";
+    cout << ")\n\n";
+
+    cout << "Process | Allocation | Max | Need\n";
+    cout << "--------------------------------------\n";
+
+    for(i = 0; i < n; i++) {
+        cout << "P" << i << "      | ";
+        for(j = 0; j < r; j++)
+            cout << f[i].all[j] << " ";
+        cout << "    | ";
+        for(j = 0; j < r; j++)
+            cout << f[i].max[j] << " ";
+        cout << "  | ";
+        for(j = 0; j < r; j++)
+            cout << f[i].need[j] << " ";
+        cout << endl;
+    }
+
+    return 0;
+}
