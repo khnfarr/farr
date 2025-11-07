@@ -1,0 +1,174 @@
+Keren banget kamu sudah sampai di bagian ini 👏
+Kode yang kamu kirim masih menggunakan algoritma Bankir, tapi kali ini dibuat untuk mensimulasikan kondisi deadlock — artinya sistem akan mendeteksi bahwa permintaan sumber daya yang diajukan tidak bisa diberikan karena akan membuat sistem tidak aman.
+
+Berikut penjelasan lengkap dan analisisnya 👇
+
+
+---
+
+🧠 Tujuan Program
+
+Program ini digunakan untuk mengecek kondisi tidak aman (deadlock) setelah suatu proses meminta tambahan sumber daya.
+Berbeda dengan contoh sebelumnya yang menghasilkan safe state, program ini dibuat agar contoh inputnya menyebabkan deadlock.
+
+
+---
+
+⚙ Struktur & Variabel Utama
+
+struct file {
+    int all[10];   // Alokasi sumber daya saat ini untuk proses
+    int max[10];   // Jumlah maksimum sumber daya yang dibutuhkan proses
+    int need[10];  // Sisa kebutuhan (max - all)
+    int flag;      // Status proses (0 = belum selesai, 1 = selesai)
+};
+
+Selain itu ada variabel:
+
+avail[] → sumber daya yang masih tersedia
+
+request[] → permintaan baru dari proses tertentu
+
+seq[] → menyimpan urutan proses aman (safe sequence)
+
+cnt → menghitung jumlah proses yang sudah bisa dijalankan
+
+safe → indikator apakah sistem masih aman atau tidak
+
+
+
+---
+
+🧩 Alur Program
+
+1. Input Jumlah Proses & Resource
+
+Kamu diminta masukkan:
+
+Masukkan jumlah proses: 3
+Masukkan jumlah sumber daya: 3
+
+
+---
+
+2. Input Detail Tiap Proses
+
+Misalnya seperti contoh di komentar program:
+
+P0: Allocation 0 1 0 | Max 7 5 3
+P1: Allocation 2 0 0 | Max 3 2 2
+P2: Allocation 3 0 3 | Max 9 0 4
+
+
+---
+
+3. Input Resource yang Tersedia
+
+Available = 0 1 0
+
+
+---
+
+4. Input Permintaan Baru
+
+Masukkan PID: 1
+Masukkan Permintaan untuk Sumber Daya: 1 0 2
+
+Artinya proses P1 meminta tambahan (1, 0, 2) unit sumber daya.
+
+
+---
+
+5. Validasi Permintaan
+
+Program memeriksa dua hal:
+
+if(request[i] > f[id].max[i] - f[id].all[i])
+
+⟶ apakah permintaan melebihi kebutuhan maksimum (❌ ditolak)
+
+if(request[i] > avail[i])
+
+⟶ apakah permintaan melebihi sumber daya yang tersedia (❌ harus menunggu)
+
+Kalau lolos dua-duanya, maka sistem sementara memberikan sumber daya:
+
+f[id].all[i] += request[i];
+avail[i] -= request[i];
+
+
+---
+
+6. Hitung Kebutuhan (Need)
+
+f[i].need[j] = f[i].max[j] - f[i].all[j];
+
+Need = sumber daya yang masih dibutuhkan agar proses bisa selesai.
+
+
+---
+
+7. Mengecek Safe Sequence
+
+Sistem mencoba mencari urutan proses yang bisa berjalan aman. Jika ada proses Pj dengan need ≤ avail, maka proses itu “selesai” dan melepaskan sumber dayanya kembali ke sistem (avail += allocation).
+
+Kalau tidak ada satu pun proses yang bisa jalan, sistem tidak aman → deadlock.
+
+
+---
+
+8. Kondisi Deadlock
+
+Dalam contoh ini, setelah request (1,0,2) diberikan ke P1:
+
+Available menjadi sangat sedikit
+
+Tidak ada proses yang need-nya bisa dipenuhi
+
+Maka kondisi ini muncul:
+
+
+REQUEST NOT GRANTED -- DEADLOCK OCCURRED
+
+
+---
+
+🔍 Analisis Kasus Contoh
+
+Proses	Allocation	Max	Need
+
+P0	0 1 0	7 5 3	7 4 3
+P1	3 0 2	3 2 2	0 2 0
+P2	3 0 3	9 0 4	6 0 1
+Available	-1 1 -2	–	–
+
+
+→ Tidak ada proses yang need ≤ available, artinya tidak ada proses bisa dieksekusi → deadlock ✅
+
+
+---
+
+🧾 Kesimpulan Analisis
+
+Aspek	Penjelasan
+
+Nama Algoritma	Banker’s Algorithm
+Tujuan	Mendeteksi apakah sistem dalam keadaan aman setelah permintaan sumber daya
+Kasus ini	Didesain agar deadlock terjadi
+Output	“REQUEST NOT GRANTED -- DEADLOCK OCCURRED”
+Penyebab Deadlock	Permintaan membuat available tidak cukup untuk memenuhi need proses lain
+Manfaat Simulasi Ini	Untuk memahami bagaimana sistem operasi mencegah deadlock dengan Banker’s Algorithm
+
+
+
+---
+
+Kalau kamu mau, aku bisa bantu buatkan:
+
+💡 Tabel per langkah (need, avail, safe sequence) biar jelas bagaimana deadlock muncul
+atau
+
+🧮 Versi yang otomatis menghitung tanpa input manual, biar bisa langsung dijalankan
+
+
+Kamu mau yang mana?
