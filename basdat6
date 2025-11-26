@@ -1,0 +1,320 @@
+
+## 1\. Praktikkan langkah-langkah Langkah DML 1-5 📝
+
+Ini mengacu pada bagian **6.6 LANGKAH DML** dalam dokumen (halaman 65-68) yang mencakup:
+
+1.  **Menambahkan data ke tabel** (`INSERT`).
+2.  **Melihat isi tabel** (`SELECT`).
+3.  **Membatasi jumlah *field* yang dibaca** (`SELECT` dengan spesifik kolom, `ORDER BY`).
+4.  **Mengubah isi data** (`UPDATE`).
+5.  **Menghapus isi tabel** (`DELETE`).
+6.  **Penggunaan Limit dan Offset** (`LIMIT`, `OFFSET`).
+
+Karena Anda diminta untuk mempraktikkan langkah-langkah ini, saya akan menyajikan *query* SQL yang sesuai dengan contoh yang diberikan dalam dokumen tersebut:
+
+  * **1. Menambahkan Data ke Tabel (INSERT):**
+
+    ```sql
+    -- Tanpa menyebutkan kolom
+    INSERT INTO nama_tabel VALUES ('18451', 'Nur Fatayah', 'Yogyakarta');
+
+    -- Menyebutkan kolom
+    INSERT INTO mahasiswa (nim, nama_mhs, alamat_mhs) VALUES ('18324', 'Mahardhika', 'Sleman');
+    ```
+
+    (Anggap nama tabel adalah `mahasiswa` seperti di contoh *query* berikutnya)
+
+  * **2. Melihat Isi Tabel (SELECT):**
+
+    ```sql
+    SELECT * FROM mahasiswa;
+    SELECT * FROM mahasiswa WHERE nim = '18451';
+    SELECT * FROM mahasiswa WHERE alamat_mhs LIKE '%Sleman%';
+    ```
+
+  * **3. Membatasi Jumlah *Field* (Kolom) yang Dibaca (SELECT spesifik kolom, ORDER BY):**
+
+    ```sql
+    SELECT nim, nama_mhs FROM mahasiswa;
+    SELECT nim, nama_mhs FROM mahasiswa ORDER BY nim ASC;
+    SELECT nim, nama_mhs FROM mahasiswa ORDER BY nim DESC;
+    ```
+
+  * **4. Mengubah Isi Data (UPDATE):**
+
+    ```sql
+    UPDATE mahasiswa SET nama_mhs = 'Nur Fatayah' WHERE nim = '18451';
+    ```
+
+  * **5. Menghapus Isi Data (DELETE):**
+
+    ```sql
+    DELETE FROM mahasiswa WHERE nim = '18008';
+    ```
+
+  * **6. Penggunaan Limit dan Offset (LIMIT & OFFSET):**
+
+    ```sql
+    -- Tampilkan 5 baris pertama
+    SELECT nim, nama FROM mahasiswa ORDER BY nim LIMIT 5;
+
+    -- Tampilkan 5 baris, lewati 2 baris pertama
+    SELECT nim, nama FROM mahasiswa ORDER BY nim LIMIT 5 OFFSET 2;
+    ```
+
+-----
+
+## 2\. Praktikkan langkah Fungsi Agregasi termasuk *sub query* 📊
+
+Ini mengacu pada bagian **2. Fungsi Agregasi** dan **3. Menerapkan Sub-Query** (halaman 69-73) yang mencakup fungsi agregasi (`SUM`, `AVG`, `MIN`, `MAX`, `COUNT`) dan Sub-Query.
+
+### 2.1 Fungsi Agregasi
+
+Anggap kita menggunakan tabel `mata_kuliah` (dengan kolom `nama_mat_kul`, `sks`) dan tabel `nilai` (dengan kolom `nim`, `kode_kul`, `nilai`).
+
+  * **a. Menampilkan data mata kuliah yang dilaksanakan di semester 1:**
+
+    ```sql
+    SELECT * FROM mata_kuliah WHERE sem = 1;
+    ```
+
+  * **b. Menampilkan data mata kuliah yang dilaksanakan selain semester 1:**
+
+    ```sql
+    SELECT * FROM mata_kuliah WHERE sem <> 1; -- atau sem != 1
+    ```
+
+  * **c. Menampilkan mata kuliah yang mengandung judul 'Informatika':**
+
+    ```sql
+    SELECT * FROM mata_kuliah WHERE nama_mat_kul LIKE '%Informatika%';
+    ```
+
+  * **d. Menampilkan data mata kuliah yang mengandung judul informatika dan sks-nya = 3:**
+
+    ```sql
+    SELECT * FROM mata_kuliah WHERE nama_mat_kul LIKE '%Informatika%' AND sks = 3;
+    ```
+
+  * **e. Menghitung total data mata kuliah:**
+
+    ```sql
+    SELECT COUNT(*) AS total_matkul FROM mata_kuliah;
+    ```
+
+  * **f. Menghitung sks yang paling sedikit, sks yang paling banyak, dan rata-rata sks:**
+
+    ```sql
+    SELECT MIN(sks) AS min_sks, MAX(sks) AS max_sks, AVG(sks) AS avg_sks FROM mata_kuliah;
+    ```
+
+  * **g. Menghitung total jumlah sks:**
+
+    ```sql
+    SELECT SUM(sks) AS total_sks FROM mata_kuliah;
+    ```
+
+### 2.2 Sub-Query
+
+  * **Menampilkan data mahasiswa yang nilainya melebihi rata-rata nilai mata kuliah secara keseluruhan:**
+    (Diasumsikan rata-rata nilai dihitung dari kolom `nilai` pada tabel `nilai`)
+
+    ```sql
+    SELECT nim, nilai
+    FROM nilai
+    WHERE nilai > (SELECT AVG(nilai) FROM nilai);
+    ```
+
+  * **Mencari data nilai yang nilainya sama dengan nilai maksimal (MAX):**
+
+    ```sql
+    SELECT nim, nilai
+    FROM nilai
+    WHERE nilai = (SELECT MAX(nilai) FROM nilai);
+    ```
+
+  * **Menggunakan ORDER BY dan LIMIT untuk menampilkan nilai maksimal (Jika ada lebih dari 1 baris nilai MAX):**
+
+    ```sql
+    SELECT nim, nilai
+    FROM nilai
+    ORDER BY nilai DESC
+    LIMIT 1;
+    ```
+
+  * **Menampilkan data mahasiswa yang mengambil mata kuliah 'IF0104' dengan IN:**
+
+    ```sql
+    SELECT nim, nama_mhs
+    FROM mahasiswa
+    WHERE nim IN (SELECT nim FROM nilai WHERE kode_kul = 'IF0104');
+    ```
+
+  * **Menampilkan data mahasiswa yang tidak mengambil mata kuliah 'IF0104' dengan NOT IN:**
+
+    ```sql
+    SELECT nim, nama_mhs
+    FROM mahasiswa
+    WHERE nim NOT IN (SELECT nim FROM nilai WHERE kode_kul = 'IF0104');
+    ```
+
+-----
+
+## POST TEST 📝
+
+Berikut adalah jawaban untuk pertanyaan-pertanyaan di bagian **POST TEST**:
+
+### 1\. Data pada *database* yang telah dibuat
+
+Ini adalah soal praktis, bukan soal teoritis. Asumsi Anda telah membuat dan mengisi 5 buah tabel (misalnya: `mahasiswa`, `nilai`, `mata_kuliah`, `prodi`, `dosen`).
+
+  * **1. Tampilkan semua data yang telah diinput pada masing-masing tabel:**
+
+    ```sql
+    SELECT * FROM mahasiswa;
+    SELECT * FROM nilai;
+    SELECT * FROM mata_kuliah;
+    SELECT * FROM prodi;
+    SELECT * FROM dosen;
+    ```
+
+  * **2. Tampilkan semua data yang telah diinput pada masing-masing tabel dengan menggunakan kondisi (WHERE):**
+    (Contoh menggunakan kondisi pada tabel `mahasiswa`)
+
+    ```sql
+    SELECT * FROM mahasiswa WHERE alamat_mhs = 'Yogyakarta';
+    -- atau
+    SELECT * FROM mahasiswa WHERE nim LIKE '18%';
+    ```
+
+  * **3. Tampilkan salah satu data pada setiap tabel:**
+    (Contoh menggunakan `LIMIT 1` pada setiap tabel)
+
+    ```sql
+    SELECT * FROM mahasiswa LIMIT 1;
+    SELECT * FROM nilai LIMIT 1;
+    SELECT * FROM mata_kuliah LIMIT 1;
+    SELECT * FROM prodi LIMIT 1;
+    SELECT * FROM dosen LIMIT 1;
+    ```
+
+### 2\. Menuliskan pengertian dari *insert*, *data*, *delete*, dan *update* data. Tuliskan sintaks *insert*, *update* dan *delete* untuk memasukkan data yang telah dimuat di tabel mata kuliah: `matkul18451@webmail.uad.ac.id`
+
+#### 2.1 Pengertian DML (Data Manipulation Language)
+
+  * ***Insert* (Menyisipkan Data):** Perintah DML yang digunakan untuk **menambahkan** baris data (rekaman) baru ke dalam suatu tabel.
+  * ***Update* (Memperbarui Data):** Perintah DML yang digunakan untuk **mengubah** nilai dari kolom-kolom tertentu pada baris data yang sudah ada di dalam tabel.
+  * ***Delete* (Menghapus Data):** Perintah DML yang digunakan untuk **menghapus** baris data yang sudah ada dari suatu tabel, berdasarkan kriteria tertentu.
+
+#### 2.2 Sintaks DML
+
+Anggap kita menggunakan tabel `mata_kuliah` dan *field* yang relevan adalah `kode_kul`, `nama_mat_kul`, `sks`, dan `email_dosen`.
+
+  * **Sintaks INSERT:** (Menambahkan data mata kuliah baru yang diampu oleh dosen dengan email tersebut)
+
+    ```sql
+    INSERT INTO mata_kuliah (kode_kul, nama_mat_kul, sks, email_dosen)
+    VALUES ('IF0105', 'Basis Data Lanjut', 3, 'matkul18451@webmail.uad.ac.id');
+    ```
+
+  * **Sintaks UPDATE:** (Mengubah *email\_dosen* untuk mata kuliah yang sudah ada, misalnya kode `IF0101`)
+
+    ```sql
+    UPDATE mata_kuliah
+    SET email_dosen = 'matkul18451@webmail.uad.ac.id'
+    WHERE kode_kul = 'IF0101';
+    ```
+
+  * **Sintaks DELETE:** (Menghapus baris mata kuliah yang diampu oleh dosen tersebut, jika ada mata kuliah yang *email\_dosen*-nya adalah alamat yang dimaksud)
+
+    ```sql
+    DELETE FROM mata_kuliah
+    WHERE email_dosen = 'matkul18451@webmail.uad.ac.id';
+    ```
+
+POST DOANG :
+📝 Jawaban Post Test (Nilai Total: 100)
+1. Pertanyaan 1 (Bobot: 50)
+CPK: CPL 03 KU03
+CPMK: CPMK 3.3.3
+Pertanyaan:
+Pada database yang telah disediakan, buatlah minimal 5 buah data pada masing-masing tabel (setelah dikurangi data yang ada).
+Tampilkan semua data yang telah Anda input.
+Tampilkan semua data yang diinputkan sesuai dengan kondisi tertentu (gunakan klausul WHERE).
+Tampilkan salah satu data pada setiap tabel.
+Dokumen Pendukung: Jawaban hasil praktek (screenshot)
+Jawaban Query (Asumsi nama tabel yang digunakan adalah mahasiswa dan nilai seperti pada contoh dokumen):
+a. Membuat 5 data baru (Contoh untuk tabel mahasiswa dan nilai):
+SQL
+-- Tambah data di tabel mahasiswa
+INSERT INTO mahasiswa (nim, nama_mhs, alamat_mhs) VALUES
+('240312501', 'Bagas Adit', 'Bantul'),
+('240312502', 'Dewi Lestari', 'Sleman'),
+('240312503', 'Fahmi Ridho', 'Kulon Progo'),
+('240312504', 'Gina Amalia', 'Gunung Kidul'),
+('240312505', 'Hasanudin', 'Yogyakarta');
+
+-- Tambah data di tabel nilai
+-- Asumsi tabel nilai memiliki kolom nim, kode_kul, dan nilai
+INSERT INTO nilai (nim, kode_kul, nilai) VALUES
+('240312501', 'IF0101', 90),
+('240312502', 'IF0102', 85),
+('240312503', 'IF0103', 78),
+('240312504', 'IF0101', 92),
+('240312505', 'IF0102', 80);
+b. Menampilkan semua data yang telah diinput:
+SQL
+SELECT * FROM mahasiswa;
+SELECT * FROM nilai;
+c. Menampilkan data dengan kondisi tertentu (menggunakan WHERE):
+SQL
+-- Contoh: Menampilkan mahasiswa yang beralamat di 'Sleman'
+SELECT * FROM mahasiswa WHERE alamat_mhs = 'Sleman';
+
+-- Contoh: Menampilkan nilai yang lebih dari 85
+SELECT * FROM nilai WHERE nilai > 85;
+d. Menampilkan salah satu data:
+SQL
+-- Tampilkan 1 data dari tabel mahasiswa
+SELECT * FROM mahasiswa LIMIT 1;
+
+-- Tampilkan 1 data dari tabel nilai
+SELECT * FROM nilai LIMIT 1;
+2. Pertanyaan 2 (Bobot: 50)
+CPK: CPL 03 KU03
+CPMK: CPMK 3.3.3
+Pertanyaan:
+Jelaskan pengertian dari insert data, update data, dan delete data.
+Tuliskan sintaks untuk insert, update, dan delete data.
+Tuliskan sintaks untuk memasukkan data Anda (NIM, Nama, Alamat) di mahasiswa (misal: nim:'18451', nama_mhs:'Nur Fathayah', alamat_mhs:'Yogyakarta').
+Dokumen Pendukung: Jawaban hasil praktek (screenshot)
+Jawaban Konsep dan Sintaks:
+a. Pengertian DML (Data Manipulation Language)
+INSERT Data (Memasukkan Data):
+Pengertian: Perintah untuk menambahkan baris atau record baru ke dalam sebuah tabel di database.
+Tujuan: Untuk mengisi tabel dengan data.
+UPDATE Data (Memperbarui Data):
+Pengertian: Perintah untuk mengubah atau memodifikasi nilai dari satu atau lebih kolom pada baris data yang sudah ada di dalam tabel.
+Tujuan: Untuk menjaga data tetap akurat dan relevan.
+DELETE Data (Menghapus Data):
+Pengertian: Perintah untuk menghapus satu atau lebih baris/record dari sebuah tabel.
+Tujuan: Untuk menghilangkan data yang tidak lagi diperlukan dari database.
+b. Sintaks Umum DML
+
+Operasi
+Sintaks Umum
+Keterangan
+INSERT
+INSERT INTO nama_tabel (kolom1, kolom2, ...) VALUES (nilai1, nilai2, ...);
+Memasukkan nilai baru ke kolom yang ditentukan.
+UPDATE
+UPDATE nama_tabel SET kolom1 = nilai_baru WHERE kondisi;
+Mengubah nilai di kolom1 hanya pada baris yang memenuhi kondisi.
+DELETE
+DELETE FROM nama_tabel WHERE kondisi;
+Menghapus baris yang memenuhi kondisi. Jika WHERE dihilangkan, semua data akan terhapus.
+c. Sintaks Memasukkan Data Anda ke Tabel mahasiswa
+Menggunakan contoh data yang Anda berikan: nim:'18451', nama_mhs:'Nur Fathayah', alamat_mhs:'Yogyakarta'.
+SQL
+INSERT INTO mahasiswa (nim, nama_mhs, alamat_mhs) VALUES
+('18451', 'Nur Fathayah', 'Yogyakarta');
