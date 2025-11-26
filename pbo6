@@ -1,0 +1,212 @@
+Tentu, saya akan membantu Anda mengerjakan soal **POST TEST** berdasarkan materi yang tersedia.
+
+Soal POST TEST ada di bagian $6.7$ pada Gambar 6.4 **Diagram Nasabah**.
+
+## 🚀 Jawaban Soal POST TEST (Total Skor: 100)
+
+Soal POST TEST meminta Anda untuk:
+
+1.  Jelaskan jenis relasi antar kelas pada Gambar 6.4.
+2.  Buatlah *code* Java untuk mengimplementasikan kelas tersebut.
+3.  Buatlah *class tester* untuk menampilkan data seorang nasabah dan rekeningnya.
+
+Berikut adalah jawaban dan implementasi kodenya.
+
+-----
+
+### 1\. Relasi Antar Kelas (Skor 20)
+
+**Pertanyaan:** Jelaskan jenis relasi antar kelas pada Gambar 6.4\!
+
+**Jawaban:**
+
+Gambar 6.4 menunjukkan relasi antara kelas **`Nasabah`** dan kelas **`Rekening`**.
+
+  * **Jenis Relasi:** Relasi yang terjadi adalah **Agregasi** (atau sering juga disebut *Composition* jika dependensinya kuat, tetapi Agregasi adalah jawaban yang lebih umum untuk relasi *has-a* dengan kardinalitas $1$ ke $*$).
+      * **Kardinalitas:** $1$ (Nasabah) ke $*$ (Rekening), yang berarti **satu** `Nasabah` dapat memiliki **banyak** (`0` atau lebih) `Rekening`.
+      * **Arah Relasi:** Kelas `Nasabah` memiliki atribut yang menyimpan kumpulan objek `Rekening` (`private Rekening[] rek;`), menunjukkan bahwa `Nasabah` **memiliki** (`has-a`) `Rekening`.
+
+## Relasi ini menggambarkan bahwa `Rekening` adalah bagian dari `Nasabah`, tetapi kedua objek (secara konseptual) dapat berdiri sendiri. Materi yang Anda berikan menyebutkan bahwa relasi *has-a* seperti ini adalah **Asosiasi** secara umum, dan lebih spesifik sebagai **Agregasi** karena `Rekening` merupakan bagian dari `Nasabah`.
+
+### 2\. Implementasi Kelas (Skor 50)
+
+**Pertanyaan:** Buatlah *code* Java untuk mengimplementasikan kelas tersebut.
+
+Berdasarkan diagram, kita memerlukan dua kelas: `Rekening` dan `Nasabah`.
+
+#### `Rekening.java`
+
+```java
+public class Rekening {
+    private String noRekening;
+    private double saldo;
+
+    // Konstruktor
+    public Rekening(String noRek, double saldoAwal) {
+        this.noRekening = noRek;
+        this.saldo = saldoAwal;
+    }
+
+    // Mutator (Setter) untuk menambah saldo (deposit)
+    public void deposit(double jumlah) {
+        if (jumlah > 0) {
+            this.saldo += jumlah;
+            System.out.println("Deposit berhasil. Saldo saat ini: " + this.saldo);
+        } else {
+            System.out.println("Deposit gagal. Jumlah harus positif.");
+        }
+    }
+
+    // Mutator (Setter) untuk mengurangi saldo (withdraw)
+    public void withdraw(double jumlah) {
+        if (jumlah > 0 && this.saldo >= jumlah) {
+            this.saldo -= jumlah;
+            System.out.println("Withdraw berhasil. Saldo saat ini: " + this.saldo);
+        } else if (this.saldo < jumlah) {
+            System.out.println("Withdraw gagal. Saldo tidak mencukupi.");
+        } else {
+            System.out.println("Withdraw gagal. Jumlah harus positif.");
+        }
+    }
+
+    // Aksesor (Getter)
+    public String getNoRekening() {
+        return noRekening;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+}
+```
+
+#### `Nasabah.java`
+
+```java
+public class Nasabah {
+    private String nama;
+    private String alamat;
+    private String noTelp;
+    private int jmlRekening;
+    // Maksimal 5 rekening sesuai deskripsi soal
+    private Rekening[] rek = new Rekening[5]; 
+
+    // Konstruktor
+    public Nasabah(String nama, String alamat, String noTelp) {
+        this.nama = nama;
+        this.alamat = alamat;
+        this.noTelp = noTelp;
+        this.jmlRekening = 0; // Mulai dengan 0 rekening
+    }
+
+    // Method untuk menambah rekening baru
+    public boolean bukaRekening(Rekening rekBaru) {
+        if (this.jmlRekening < 5) {
+            this.rek[this.jmlRekening] = rekBaru;
+            this.jmlRekening++;
+            System.out.println("Rekening baru berhasil ditambahkan untuk " + this.nama);
+            return true;
+        } else {
+            System.out.println("Gagal! Jumlah rekening sudah mencapai batas maksimum (5).");
+            return false;
+        }
+    }
+
+    // Aksesor (Getter)
+    public String getNama() {
+        return nama;
+    }
+
+    public String getAlamat() {
+        return alamat;
+    }
+
+    public String getNoTelp() {
+        return noTelp;
+    }
+
+    public int getJmlRekening() {
+        return jmlRekening;
+    }
+
+    // Getter untuk mendapatkan array Rekening
+    public Rekening[] getRekening() {
+        return rek;
+    }
+}
+```
+
+-----
+
+### 3\. Implementasi Class Tester (Skor 30)
+
+**Pertanyaan:** Buatlah *class tester* untuk menampilkan data seorang nasabah dan rekeningnya.
+
+#### `BankTester.java`
+
+```java
+public class BankTester {
+    public static void main(String[] args) {
+        // 1. Membuat objek Rekening
+        Rekening rek1 = new Rekening("1001-345678", 500000.0);
+        Rekening rek2 = new Rekening("1001-987654", 1250000.0);
+
+        // 2. Membuat objek Nasabah
+        Nasabah nasabahA = new Nasabah("Budi Santoso", "Jl. Mawar No. 10", "08123456789");
+
+        // 3. Menghubungkan Rekening ke Nasabah menggunakan bukaRekening()
+        nasabahA.bukaRekening(rek1);
+        nasabahA.bukaRekening(rek2);
+
+        // 4. Melakukan transaksi
+        rek1.deposit(250000.0);
+        rek2.withdraw(50000.0);
+        rek1.withdraw(1000000.0); // Uji saldo tidak mencukupi
+
+        // 5. Menampilkan data Nasabah dan Rekeningnya
+        System.out.println("\n===== DATA NASABAH =====");
+        System.out.println("Nama: " + nasabahA.getNama());
+        System.out.println("Alamat: " + nasabahA.getAlamat());
+        System.out.println("No. Telp: " + nasabahA.getNoTelp());
+        System.out.println("Jumlah Rekening: " + nasabahA.getJmlRekening());
+
+        System.out.println("\n===== DAFTAR REKENING =====");
+        Rekening[] daftarRek = nasabahA.getRekening();
+        for (int i = 0; i < nasabahA.getJmlRekening(); i++) {
+            System.out.println("Rekening ke-" + (i + 1));
+            System.out.println("  No. Rekening: " + daftarRek[i].getNoRekening());
+            System.out.println("  Saldo: Rp " + daftarRek[i].getSaldo());
+        }
+    }
+}
+```
+
+<br>
+
+**Output yang Diharapkan:**
+
+```
+Rekening baru berhasil ditambahkan untuk Budi Santoso
+Rekening baru berhasil ditambahkan untuk Budi Santoso
+Deposit berhasil. Saldo saat ini: 750000.0
+Withdraw berhasil. Saldo saat ini: 1200000.0
+Withdraw gagal. Saldo tidak mencukupi.
+
+===== DATA NASABAH =====
+Nama: Budi Santoso
+Alamat: Jl. Mawar No. 10
+No. Telp: 08123456789
+Jumlah Rekening: 2
+
+===== DAFTAR REKENING =====
+Rekening ke-1
+  No. Rekening: 1001-345678
+  Saldo: Rp 750000.0
+Rekening ke-2
+  No. Rekening: 1001-987654
+  Saldo: Rp 1200000.0
+```
+
+-----
+
+Apakah Anda ingin saya membuatkan contoh implementasi *Composition* yang lebih ketat, atau ada bagian dari kode yang ingin Anda tinjau lebih lanjut?
