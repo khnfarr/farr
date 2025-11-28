@@ -1,0 +1,42 @@
+
+## 📝 Post Test (Halaman 74)
+
+### Pertanyaan 4: Perbedaan *code* sebelum dan sesudah modifikasi
+
+**Konteks:** Bandingkan *code* **`LoopForeverTest`** (sebelum modifikasi) dengan **`LoopForeverTest2`** (sesudah modifikasi):
+
+**Code A (Awal, Halaman 72):**
+
+```
+Program Foreverloop
+while true
+  i = 1
+end
+```
+
+**Code B (Modifikasi, Halaman 72):**
+
+```
+Program LoopForeverTest2
+while true
+  i = i + 1
+  n = n + 1
+end
+```
+
+**Jelaskan dan simpulkan perbedaan antara *code* sebelum di modifikasi dan sesudah di modifikasi\!**
+
+| Perbedaan | Code A (`Foreverloop`) | Code B (`LoopForeverTest2`) |
+| :--- | :--- | :--- |
+| **Instruksi dalam *Loop*** | Hanya satu instruksi: `i = 1` (Assignment) | Dua instruksi: `i = i + 1` (Increment) dan `n = n + 1` (Increment) |
+| **Keterlibatan Variabel** | Hanya variabel `i` di-set ulang ke 1 setiap iterasi. | Variabel `i` dan `n` di-increment setiap iterasi. |
+| **Page yang Diakses** | Kemungkinan hanya mengakses **satu Page** yang berisi instruksi `i = 1` dan loop. | Kemungkinan hanya mengakses **satu Page** (jika instruksinya berdekatan), tetapi membutuhkan **dua kali operasi** dalam loop. |
+| **Dampak CPU *Burst*** | **Sangat pendek**, karena hanya 1 instruksi. Proses ini akan sering **di-*preempt*** (pada RR) dan segera *context switch*. | **Lebih panjang** (2 instruksi), tetapi tetap termasuk *CPU burst* pendek. Akan lebih sedikit *context switch* dibandingkan Code A dalam jumlah waktu yang sama. |
+| **Dampak I/O (Memori)** | Dalam Paging, Page Fault mungkin terjadi hanya sekali pada Page instruksi tersebut. | Dalam Paging, Page Fault mungkin terjadi hanya sekali pada Page instruksi tersebut. |
+
+**Kesimpulan:**
+
+Perbedaan utamanya adalah **jumlah instruksi yang dieksekusi dalam setiap iterasi *loop*** dan **jenis operasi yang dilakukan**.
+
+  * **Code A (`Foreverloop`):** Prosesnya **tidak melakukan perhitungan** yang berarti (`i` selalu di-*reset* ke 1) dan memiliki **CPU *burst* yang sangat singkat** (hanya 1 instruksi per iterasi). Ini adalah contoh proses yang **sangat *CPU-bound*** namun dengan *burst* yang sangat pendek, yang akan menguji *overhead* dari **Context Switching** pada penjadwalan RR.
+  * **Code B (`LoopForeverTest2`):** Proses ini **melakukan perhitungan** (`i` dan `n` di-*increment*) dan memiliki **CPU *burst* dua kali lebih panjang** daripada Code A (2 instruksi per iterasi). Ini adalah contoh proses yang lebih realistis dan akan menunjukkan *overhead* **Context Switching** yang sedikit lebih rendah per unit waktu dibandingkan Code A.
