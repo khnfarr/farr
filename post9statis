@@ -1,0 +1,73 @@
+# Kasus 1 — Pengujian normalitas variabel **INCOME** (Tabel 9.1)
+
+**Data income (juta)** (20 observasi, saya baca dari tabel):
+`[2.5, 2.5, 4, 1, 2.5, 0.5, 2.5, 3, 2, 1, 2.5, 0.5, 2.5, 1, 4, 1, 0.7, 0.5, 3, 5.5]`
+
+**Statistik ringkas**
+
+* n = 20
+* Mean ≈ **2.135** juta
+* Std (pop) ≈ **1.338** juta
+
+**Moments & Jarque–Bera (JB)**
+
+* Skewness ≈ **0.6412** (positif, sedikit miring kanan)
+* Excess kurtosis ≈ **-0.1023** (hampir normal)
+* JB ≈ **1.3792**
+
+**Keputusan (α = 0.05)**
+
+* Ambang kritis χ²(2,0.05) ≈ **5.991**. Karena **JB = 1.379 < 5.991**, **gagal menolak H₀**.
+* **Kesimpulan:** data INCOME **dapat dianggap berdistribusi normal** pada tingkat signifikansi 5%.
+* Catatan visual: Q–Q plot mungkin memperlihatkan sedikit penyimpangan ke kanan (sesuai skewness positif), tetapi secara statistik tidak signifikan menurut JB.
+
+---
+
+# Kasus 2 — Dataset nutrisi balita (Tabel 9.2)
+
+Saya uji **Tinggi Badan (cm)** dan **Berat Badan (kg)**.
+
+**Data (saya transkripsi dari tabel, 15 observasi):**
+Tinggi (cm):
+`[70, 60, 60, 70, 50, 55, 75, 72, 45, 47, 47, 45, 55, 68, 70]`
+
+Berat (kg): saya asumsikan nilai yang tampak pada gambar; untuk baris 7 (Hilmi) saya baca kemungkinan `3.5` (bukan `35` karena 35 kg untuk bayi tidak masuk akal), sehingga:
+`[10, 5, 6, 7, 5, 5, 3.5, 7, 6, 6, 7, 6, 6, 7, 15]`
+
+**Hasil uji Jarque–Bera (JB)**
+
+* Tinggi: skew ≈ -0.0065, excess kurtosis ≈ -1.5388, **JB ≈ 1.480** → **JB < 5.991** → **gagal tolak H₀**.
+  → **Tinggi Badan dapat dianggap berdistribusi normal** (α=0.05).
+
+* Berat: skew ≈ **2.041** (sangat miring kanan), excess kurtosis ≈ **4.070**, **JB ≈ 20.77** → **JB > 5.991** → **tolak H₀**.
+  → **Berat Badan tidak berdistribusi normal** (α=0.05). Kemungkinan disebabkan outlier / distribusi miring (mis. anak sangat berat/kurus).
+
+**Catatan penting:** jika nilai di tabel asli untuk Hilmi adalah 35 (bukan 3.5) maka itu jelas outlier dan semakin memperkuat ketidaknormalan; tetapi jika ada koreksi angka, uji berat perlu diulang dengan angka yang benar.
+
+---
+
+# Kasus 3 — Dataset Anak SMP (Tabel 9.3): Pengujian apakah **Nilai** berdistribusi normal
+
+Saya menggunakan nilai yang muncul di tabel (20 observasi yang tampak di gambar — meskipun teks menyebut 25 anak, tabel yang tersedia berisi 20 nilai). Data **Nilai** yang saya gunakan:
+`[80,55,50,85,45,87,80,90,90,90,45,80,87,85,55,50,90,90,90,45]`
+
+**Statistik & JB**
+
+* Skewness ≈ **-0.593** (sedikit miring kiri)
+* Excess kurtosis ≈ **-1.464**
+* JB ≈ **2.958**
+
+**Keputusan (α = 0.05)**
+
+* Karena **JB = 2.958 < 5.991**, **gagal menolak H₀**.
+* **Kesimpulan:** Data **Nilai** pada tabel ini **dapat dianggap berdistribusi normal** pada α = 0.05.
+
+---
+
+# Rangkuman singkat & rekomendasi
+
+1. **Kasus 1 (Income)**: *Normal* (uji JB ⇒ gagal tolak H₀).
+2. **Kasus 2 (Balita)**: *Tinggi* → normal; *Berat* → **tidak normal** (sangat miring / ada outlier).
+
+   * Saran: cek data asli; jika terdapat kesalahan ketik (mis. 35 vs 3.5) perbaiki lalu ulang uji. Untuk berat yang tidak normal, gunakan uji non-parametrik jika perlu (mis. median test / Mann–Whitney kalau membandingkan grup).
+3. **Kasus 3 (Nilai SMP)**: *Normal* (uji JB ⇒ gagal tolak H₀).
