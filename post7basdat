@@ -1,0 +1,146 @@
+
+# 1) Buat database & pakai
+
+```sql
+CREATE DATABASE db_posttest;
+USE db_posttest;
+```
+
+# 2) Buat tabel `mahasiswa` dan `nilai`
+> Supaya mudah mendemonstrasikan LEFT/RIGHT JOIN, di tabel `nilai` saya **tidak** memaksa foreign key (agar bisa ada record nilai tanpa mahasiswa yang sesuai — untuk RIGHT JOIN).
+Kalau mau pakai FK, bisa ditambahkan tetapi pastikan urutan insert sesuai.
+
+```sql
+-- Tabel mahasiswa
+CREATE TABLE mahasiswa (
+  nim VARCHAR(10) NOT NULL,
+  nama_mhs VARCHAR(100) NOT NULL,
+  alamat VARCHAR(150),
+  PRIMARY KEY (nim)
+);
+
+-- Tabel nilai
+CREATE TABLE nilai (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nim VARCHAR(10),
+  kode_kul VARCHAR(10),
+  nilai INT
+);
+```
+
+# 3) Isi data minimal 5 record (contoh)
+
+```sql
+-- isi tabel mahasiswa (5 data)
+INSERT INTO mahasiswa (nim, nama_mhs, alamat) VALUES
+('18101','Rahma Nadia','Gunung Kidul'),
+('18102','Dian Sastro','Jakarta'),
+('18103','Aulia','Kulon Progo'),
+('18104','Fidia Fajri','Sleman'),
+('18105','Mahardika','Sleman');
+
+-- isi tabel nilai (ada 5 data; satu record nilainya milik nim yang TIDAK ADA di tabel mahasiswa untuk contoh RIGHT JOIN)
+INSERT INTO nilai (nim, kode_kul, nilai) VALUES
+('18101','IF0105',85),
+('18102','IF0106',90),
+('18103','IF0105',80),
+('18104','IF0206',75),
+('99999','IF0105',88);  -- 99999 tidak ada di tabel mahasiswa
+```
+
+# 4) Query dan contoh hasil
+
+### a) INNER JOIN
+
+Tampilkan NIM, nama mahasiswa, kode mata kuliah, dan nilai — hanya record yang ada pasangan di kedua tabel.
+
+```sql
+SELECT m.nim, m.nama_mhs, n.kode_kul, n.nilai
+FROM mahasiswa m
+INNER JOIN nilai n ON m.nim = n.nim;
+```
+
+**Contoh hasil (INNER JOIN)**:
+
+```
++--------+--------------+----------+-------+
+| nim    | nama_mhs     | kode_kul | nilai |
++--------+--------------+----------+-------+
+| 18101  | Rahma Nadia  | IF0105   | 85    |
+| 18102  | Dian Sastro  | IF0106   | 90    |
+| 18103  | Aulia        | IF0105   | 80    |
+| 18104  | Fidia Fajri  | IF0206   | 75    |
++--------+--------------+----------+-------+
+```
+
+(note: 18105 tidak muncul karena tidak punya nilai; 99999 tidak muncul karena tidak ada mahasiswa)
+
+---
+
+### b) LEFT JOIN
+
+Tampilkan semua mahasiswa beserta nilai bila ada. Mahasiswa tanpa nilai akan menampilkan `NULL` pada kolom nilai.
+
+```sql
+SELECT m.nim, m.nama_mhs, n.kode_kul, n.nilai
+FROM mahasiswa m
+LEFT JOIN nilai n ON m.nim = n.nim;
+```
+
+**Contoh hasil (LEFT JOIN)**:
+
+```
++--------+--------------+----------+-------+
+| nim    | nama_mhs     | kode_kul | nilai |
++--------+--------------+----------+-------+
+| 18101  | Rahma Nadia  | IF0105   | 85    |
+| 18102  | Dian Sastro  | IF0106   | 90    |
+| 18103  | Aulia        | IF0105   | 80    |
+| 18104  | Fidia Fajri  | IF0206   | 75    |
+| 18105  | Mahardika    | NULL     | NULL  |
++--------+--------------+----------+-------+
+```
+
+(note: 18105 tampil dengan `NULL` karena tidak punya nilai)
+
+---
+
+### c) RIGHT JOIN
+
+Tampilkan semua record dari `nilai` beserta data mahasiswa bila ada. Record di `nilai` yang tidak punya pasangan mahasiswa akan menampilkan `NULL` untuk kolom mahasiswa.
+
+```sql
+SELECT m.nim, m.nama_mhs, n.kode_kul, n.nilai
+FROM mahasiswa m
+RIGHT JOIN nilai n ON m.nim = n.nim;
+```
+
+**Contoh hasil (RIGHT JOIN)**:
+
+```
++--------+--------------+----------+-------+
+| nim    | nama_mhs     | kode_kul | nilai |
++--------+--------------+----------+-------+
+| 18101  | Rahma Nadia  | IF0105   | 85    |
+| 18102  | Dian Sastro  | IF0106   | 90    |
+| 18103  | Aulia        | IF0105   | 80    |
+| 18104  | Fidia Fajri  | IF0206   | 75    |
+| 99999  | NULL         | IF0105   | 88    |
++--------+--------------+----------+-------+
+```
+
+(note: baris `99999` dari tabel `nilai` muncul; kolom mahasiswa `NULL` karena tidak ada mahasiswa dengan nim=99999)
+
+---
+
+# 5) (Opsional) Perintah untuk melihat struktur dan data (phpMyAdmin / MySQL)
+
+* Untuk melihat tabel: `SHOW TABLES;`
+* Untuk melihat struktur: `DESCRIBE mahasiswa;`
+* Untuk melihat data: `SELECT * FROM mahasiswa;` dan `SELECT * FROM nilai;`
+
+# 6) Catatan pengumpulan / jawaban post-test
+
+* Kamu bisa sertakan di laporan: screenshot phpMyAdmin yang menunjukkan (1) pembuatan tabel, (2) pengisian data (screenshot isi tabel), dan (3) hasil query INNER/LEFT/RIGHT JOIN (screenshot hasil query).
+* Bobot penilaian pada panduan: pastikan memenuhi syarat (database + 2 tabel, masing-masing minimal 5 data, dan penggunaan inner/left/right join).
+
