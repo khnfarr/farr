@@ -1,0 +1,105 @@
+
+## 💡 Jawaban Post Test (Bagian 7.7)
+
+### 1\. Buatlah sebuah class Main yang di dalamnya menginstansiasi objek:
+
+  * **Book**
+  * **Electronics**
+  * **Clothing**
+
+Berikut adalah implementasi class `Main` dalam bahasa Java:
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        // 1. Instansiasi objek Book
+        // Name, Price, Description, Author, Pages
+        Book myBook = new Book("The Art of Programming", 150000, "A guide to clean code.", "Budi Santoso", 450);
+
+        // 2. Instansiasi objek Electronics
+        // Name, Price, Description, Brand, WarrantyPeriod (in months)
+        Electronics myLaptop = new Electronics("Laptop Pro X", 12500000, "High-performance laptop.", "TechCorp", 12);
+
+        // 3. Instansiasi objek Clothing
+        // Name, Price, Description, Size, Material
+        Clothing myShirt = new Clothing("Casual T-Shirt", 85000, "Comfortable cotton t-shirt.", "M", "Cotton");
+
+        // Memanggil showBasicInfo dan getDetails untuk setiap objek (opsional, tapi baik untuk testing)
+        
+        System.out.println("--- Detail Book ---");
+        myBook.showBasicInfo(); 
+        myBook.getDetails(); 
+
+        System.out.println("\n--- Detail Electronics ---");
+        myLaptop.showBasicInfo();
+        myLaptop.getDetails();
+
+        System.out.println("\n--- Detail Clothing ---");
+        myShirt.showBasicInfo();
+        myShirt.getDetails();
+    }
+}
+```
+
+-----
+
+### 2\. Buatlah class baru dengan nama FictionBook sebagai turunan dari class **Book**. Tambahkan property: `genre` (String). Buatlah method `getDetails()` dan diakhiri dengan menginstansiasi objek dari `FictionBook`. Jelaskan apa makna dari outputnya.
+
+#### a. Implementasi Class `FictionBook`
+
+```java
+// FictionBook.java
+public class FictionBook extends Book {
+    private String genre;
+
+    // Constructor
+    public FictionBook(String name, double price, String description, String author, int pages, String genre) {
+        // Memanggil constructor superclass (Book)
+        super(name, price, description, author, pages); 
+        this.genre = genre;
+    }
+
+    // Override method abstract getDetails()
+    @Override
+    public void getDetails() {
+        showBasicInfo(); // Memanggil showBasicInfo dari Product
+        System.out.println("Author: " + author);
+        System.out.println("Pages: " + getPages()); // getPages() digunakan karena 'pages' di Book adalah final private
+        System.out.println("Genre: " + this.genre); // Detail tambahan untuk FictionBook
+    }
+}
+```
+
+#### b. Instansiasi Objek `FictionBook` di Class `Main` dan Output
+
+Tambahkan kode instansiasi berikut ke dalam method `main` di `Main.java`:
+
+```java
+        // 4. Instansiasi objek FictionBook
+        // Name, Price, Description, Author, Pages, Genre
+        FictionBook fantasyBook = new FictionBook("The Last Wizard", 180000, "An epic fantasy adventure.", "R.K. Rowling", 600, "Fantasy");
+
+        System.out.println("\n--- Detail FictionBook ---");
+        fantasyBook.getDetails();
+```
+
+#### c. Makna dari Output
+
+**Makna Output:**
+
+Output dari pemanggilan `fantasyBook.getDetails()` (yang juga memanggil `showBasicInfo()`) akan menampilkan semua informasi detail dari objek `fantasyBook`, yaitu:
+
+  * **Product name** dan **Price**: Diperoleh dari method `showBasicInfo()` yang diwarisi dari class `Product`. Ini menunjukkan bahwa `FictionBook` mewarisi properti dasar dari leluhurnya.
+  * **Description**: Diperoleh dari `showBasicInfo()`.
+  * **Author** dan **Pages**: Diperoleh dari method `getDetails()` di class `FictionBook` yang mengakses properti dari class `Book` (superclass).
+  * **Genre**: Properti spesifik yang hanya dimiliki oleh class `FictionBook`.
+
+**Secara umum, output tersebut menunjukkan penerapan konsep:**
+
+1.  **Inheritance (Pewarisan)**: Class `FictionBook` mewarisi properti dan method dari `Book` (dan secara tidak langsung dari `Product`).
+2.  **Polymorphism (Poliomorfisme)**: Method `getDetails()` di-**override** (`@Override`) di `FictionBook` untuk memberikan implementasi yang **spesifik** yang mencakup detail `genre`, selain detail yang sudah ada di `Book`. Ini memungkinkan objek `FictionBook` merespons panggilan `getDetails()` dengan cara yang unik.
+3.  **Encapsulation (Enkapsulasi)**: Properti seperti `author` yang berstatus `protected` di `Book` dan `name`/`price` yang `private` di `Product` dapat diakses dengan benar melalui pewarisan atau method publik (`showBasicInfo()` dan `getPages()`), memastikan akses data yang terstruktur.
+
+-----
+
+Apakah Anda ingin saya menampilkan output lengkap dari eksekusi class `Main` (termasuk semua instansiasi objek) atau ada pertanyaan lain terkait materi ini?
