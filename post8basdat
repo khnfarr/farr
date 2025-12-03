@@ -1,0 +1,115 @@
+
+## 📝 **Jawaban Posttest (Total Skor: 100)**
+
+Posttest ini terdiri dari dua bagian praktik, masing-masing bernilai 50.
+
+### 1\. Praktik Langkah Trigger DELETE (Skor 50)
+
+| No. | CPL | CPMK | SUB CPMK | Pertanyaan | Dokumen Pendukung | Skor |
+| :---: | :---: | :---: | :---: | :--- | :--- | :---: |
+| 1. | CPL KU03 | CPM K.3.3.3 | SUB CPM K.3.3.3.2 | Silakan lakukan percobaan dengan mengDELETE table yang sudah ada dengan perintah ... di bawah: **1. BEFORE DELETE** - dijalankan sebelum proses delete data. **2. AFTER DELETE** - dijalankan setelah proses delete data. | Jawaban hasil screenshot | 50 |
+
+**Jawaban dan Langkah-Langkah:**
+
+Langkah-langkah ini menguji pemahaman Anda tentang dua jenis TRIGGER DELETE: `BEFORE DELETE` dan `AFTER DELETE`.
+
+**A. Buat Tabel Log Khusus Delete (Contoh)**
+Asumsikan Anda sudah memiliki tabel `produk`. Anda perlu membuat dua tabel log terpisah (misalnya `log_before_delete` dan `log_after_delete`) untuk mencatat trigger:
+
+```sql
+CREATE TABLE log_before_delete (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    kode_produk_deleted VARCHAR(6),
+    waktu_record DATETIME
+);
+
+CREATE TABLE log_after_delete (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    kode_produk_deleted VARCHAR(6),
+    waktu_record DATETIME
+);
+```
+
+**B. Buat Trigger `BEFORE DELETE`**
+Trigger ini akan mencatat data *sebelum* proses penghapusan dilakukan.
+
+```sql
+DELIMITER $$
+CREATE TRIGGER before_delete_produk
+BEFORE DELETE ON produk
+FOR EACH ROW
+BEGIN
+    INSERT INTO log_before_delete (kode_produk_deleted, waktu_record)
+    VALUES (OLD.kode_produk, NOW());
+END$$
+DELIMITER ;
+```
+
+**C. Buat Trigger `AFTER DELETE`**
+Trigger ini akan mencatat data *setelah* proses penghapusan selesai.
+
+```sql
+DELIMITER $$
+CREATE TRIGGER after_delete_produk
+AFTER DELETE ON produk
+FOR EACH ROW
+BEGIN
+    INSERT INTO log_after_delete (kode_produk_deleted, waktu_record)
+    VALUES (OLD.kode_produk, NOW());
+END$$
+DELIMITER ;
+```
+
+**D. Lakukan Perintah DELETE**
+Hapus salah satu data produk yang sudah ada (misalnya `PROD4`).
+
+```sql
+DELETE FROM produk WHERE kode_produk = 'PROD4';
+```
+
+**E. Cek Hasil Log**
+Periksa kedua tabel log untuk membuktikan bahwa kedua trigger telah bekerja:
+
+```sql
+SELECT * FROM log_before_delete;
+SELECT * FROM log_after_delete;
+```
+
+> **Dokumen Pendukung:** Screenshot yang menunjukkan perintah `DELETE` berhasil dijalankan (Query OK) dan hasil dari `SELECT * FROM log_before_delete` serta `SELECT * FROM log_after_delete` yang menampilkan *record* produk yang dihapus.
+
+-----
+
+### 2\. Praktik Langkah Stored Procedure Mencari Harga (Skor 50)
+
+| No. | CPL | CPMK | SUB CPMK | Pertanyaan | Dokumen Pendukung | Skor |
+| :---: | :---: | :---: | :---: | :--- | :--- | :---: |
+| 2. | CPL KU03 | CPM K.3.3.3 | SUB CPM K.3.3.3.2 | Silakan lakukan percobaan dengan langkah membuat Stored Procedure untuk mencari kode produk berdasarkan harga. | Jawaban hasil screenshot | 50 |
+
+**Jawaban dan Langkah-Langkah:**
+
+Langkah-langkah ini menguji kemampuan membuat `STORED PROCEDURE` yang menerima input (harga) dan menampilkan output (kode produk) yang sesuai.
+
+**A. Buat Stored Procedure `cari_kode_by_harga`**
+Buat procedure yang menerima input harga (`harga_input`) dan menampilkan kode produk (`kode_produk`).
+
+```sql
+DELIMITER $$
+CREATE PROCEDURE cari_kode_by_harga (
+    IN harga_input INT
+)
+BEGIN
+    SELECT kode_produk, nama_produk, harga
+    FROM produk
+    WHERE harga = harga_input;
+END$$
+DELIMITER ;
+```
+
+**B. Panggil (Execute) Stored Procedure**
+Panggil procedure dengan nilai harga tertentu (misalnya, harga produk `PROD1` adalah `200000`).
+
+```sql
+CALL cari_kode_by_harga(200000);
+```
+
+> **Dokumen Pendukung:** Screenshot yang menunjukkan perintah `CREATE PROCEDURE` berhasil dijalankan (Query OK) dan hasil `CALL cari_kode_by_harga(200000)` yang menampilkan `kode_produk` ('PROD1') dan data produk lainnya yang sesuai dengan harga tersebut.
