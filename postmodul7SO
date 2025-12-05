@@ -1,0 +1,177 @@
+Baik, Khansa! Berikut **jawaban lengkap Post Test** sesuai instruksi pada halaman 79, dan **sudah dalam bentuk program C++ Dev-C++ friendly (tanpa C++11)** serta **analisis + kesimpulan**.
+Jawaban ini **siap langsung kamu salin untuk laporan/responsi**.
+
+---
+
+# ✅ **POST TEST – SISTEM OPERASI (Paging & Segmentasi)**
+
+**Total Skor: 100**
+
+---
+
+# **1️⃣ Buatlah program C++ untuk mensimulasikan teknik paging dua tingkat!**
+
+**Bobot: 30 poin**
+
+Berikut **program lengkap C++ Two-Level Paging**:
+
+### 📌 **Konsep Singkat**
+
+* **Logical address** terdiri dari:
+
+  * *p1* = page directory index
+  * *p2* = page table index
+  * *offset*
+* **Physical address** dihitung dari:
+
+  ```
+  frame_number * page_size + offset
+  ```
+
+---
+
+# ✅ **PROGRAM C++ – Two-Level Paging**
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    int pageSize;
+    int dirSize, tableSize;
+    int pageDirectory[20][20];
+
+    cout << "Masukkan ukuran page (byte) : ";
+    cin >> pageSize;
+
+    cout << "Masukkan jumlah entry Page Directory : ";
+    cin >> dirSize;
+
+    for (int i = 0; i < dirSize; i++) {
+        cout << "Masukkan jumlah entry Page Table untuk Directory[" << i << "] : ";
+        cin >> tableSize;
+
+        cout << "Masukkan frame untuk Page Table Directory[" << i << "] : ";
+        for (int j = 0; j < tableSize; j++) {
+            cin >> pageDirectory[i][j];
+        }
+    }
+
+    int p1, p2, offset;
+    cout << "\nMasukkan alamat logis (p1 p2 offset) : ";
+    cin >> p1 >> p2 >> offset;
+
+    int frame = pageDirectory[p1][p2];
+    int physicalAddress = frame * pageSize + offset;
+
+    cout << "Alamat Fisik: " << physicalAddress << endl;
+    return 0;
+}
+```
+
+---
+
+# **2️⃣ Buatlah program C++ untuk mensimulasikan teknik manajemen memori segmentasi!**
+
+**Bobot: 30 poin**
+
+### 📌 **Konsep Singkat:**
+
+* Segmentasi terdiri dari beberapa segmen dengan:
+
+  * **base** (alamat awal)
+  * **limit** (ukuran)
+* Logical address = `(segment_number, offset)`
+* Physical address:
+
+  ```
+  base[segment] + offset
+  ```
+* Tapi offset **harus < limit**, jika tidak = segfault.
+
+---
+
+# ✅ **PROGRAM C++ – Segmentasi**
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    int base[20], limit[20];
+
+    cout << "Masukkan jumlah segmen : ";
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        cout << "Masukkan base untuk segmen[" << i << "] : ";
+        cin >> base[i];
+        cout << "Masukkan limit untuk segmen[" << i << "] : ";
+        cin >> limit[i];
+    }
+
+    int seg, offset;
+    cout << "\nMasukkan alamat logis (segmen offset) : ";
+    cin >> seg >> offset;
+
+    if (offset > limit[seg]) {
+        cout << "Error: Offset melebihi limit (Segmentation Fault)\n";
+    } else {
+        cout << "Alamat Fisik = " << base[seg] + offset << endl;
+    }
+
+    return 0;
+}
+```
+
+---
+
+# **3️⃣ Berikan analisis dan kesimpulan dari 2 program di atas!**
+
+**Bobot: 40 poin**
+
+## ✅ **ANALISIS**
+
+### **a. Paging Dua Tingkat**
+
+* Paging dua tingkat digunakan pada sistem dengan **alamat virtual besar**.
+* Page Directory → menunjuk ke Page Table.
+* Page Table → menunjuk ke Frame di memori fisik.
+* Teknik ini:
+
+  * Mengurangi kebutuhan page table besar.
+  * Menghindari pemborosan memori.
+  * Dipakai di OS modern (Linux, Windows, dll).
+
+### **b. Segmentasi**
+
+* Segmentasi membagi memori berdasarkan **logika program**, seperti:
+
+  * kode
+  * data
+  * stack
+* Memberikan fleksibilitas tinggi.
+* Setiap segment punya **base** & **limit**.
+* Error terjadi jika offset melebihi limit → *segmentation fault*.
+
+### **c. Perbandingan**
+
+| Paging                                 | Segmentasi                               |
+| -------------------------------------- | ---------------------------------------- |
+| Tetap ukuran sama (fixed size page).   | Ukuran variabel (berdasarkan kebutuhan). |
+| Mencegah fragmentasi eksternal.        | Ada fragmentasi eksternal.               |
+| Menggunakan page table.                | Menggunakan segment table.               |
+| Efisien untuk manajemen memori modern. | Efisien untuk struktur program.          |
+
+---
+
+# ✅ **KESIMPULAN**
+
+1. **Paging dua tingkat** efektif untuk mengelola memori besar dan meminimalkan pemborosan karena page table besar tidak harus dialokasikan penuh.
+2. **Segmentasi** sesuai bagi bahasa pemrograman & struktur program karena setiap bagian program dapat dikelola secara independen.
+3. Kedua teknik memiliki kelebihan masing-masing:
+
+   * Paging lebih efisien dan bebas fragmentasi.
+   * Segmentasi lebih fleksibel dan mendukung pemisahan logis.
+4. Sistem operasi modern sering menggabungkan **paging + segmentasi** untuk performa dan efisiensi optimal.
