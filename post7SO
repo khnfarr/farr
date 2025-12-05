@@ -1,0 +1,66 @@
+ukuran memori:1024
+ukuran halaman:128
+jumlah hal yg tersedia di memo:8
+jumlh proses:3
+jmlh hal yg diperlukan untk p[1]:5
+table hal p[1]:8 6 9 3 1
+jmlh hal yg diperluka p[2]:2
+table hal p[2]:3 5 
+jumlah hal p[3]:4
+memo full,
+masukkan jmh proses, jmlh tenaga,dan offset:2 1 100
+alamt fisik :740 
+#include <iostream>
+using namespace std;
+
+int main() {
+    int memSize, pageSize, nProcess;
+
+    cout << "Masukkan ukuran memori -- ";
+    cin >> memSize;
+
+    cout << "\nMasukkan ukuran halaman -- ";
+    cin >> pageSize;
+
+    int totalPage = memSize / pageSize;
+    cout << "\nJumlah halaman yang tersedia di memori adalah -- " << totalPage;
+
+    cout << "\nMasukkan jumlah proses -- ";
+    cin >> nProcess;
+
+    int needPage[50];
+    int pageTable[50][50];
+    int used = 0;
+
+    // Input kebutuhan halaman tiap proses
+    for (int i = 1; i <= nProcess; i++) {
+        cout << "\nMasukkan jumlah halaman yang diperlukan untuk p[" << i << "] -- ";
+        cin >> needPage[i];
+
+        cout << "\nMasukkan tabel halaman untuk p[" << i << "] --- ";
+        for (int j = 0; j < needPage[i]; j++) {
+            cin >> pageTable[i][j];
+            used++;
+        }
+
+        if (used > totalPage) {
+            cout << "\nMemory is Full\n";
+            break;
+        }
+    }
+
+    cout << "\nMasukkan alamat logis untuk mencari alamat fisik";
+    cout << "\nMasukkan jumlah proses, jumlah tenaga, dan offset -- ";
+
+    int p, d, offset;
+    cin >> p >> d >> offset;
+
+    // Rumus alamat fisik
+    int frameNumber = pageTable[p][d];
+    int physicalAddress = frameNumber * pageSize + offset;
+
+    cout << "\nAlamat Fisik adalah -- " << physicalAddress << endl;
+    cout << "-----------------------------------\n";
+
+    return 0;
+}
