@@ -1,0 +1,219 @@
+Oke — saya kerjakan kedua soal: (A) **lengkapi contoh `FourDigitNumber` + panggilan `equal`** (laprak) dan (B) **post-test: implementasi `Operasi` ke dalam class `Calculator`**. Keduanya saya berikan kode Java lengkap beserta contoh output. Tinggal copy-paste ke file `.java` dan jalankan di IDE (IntelliJ/Dev-C++ bukan untuk Java — pakai javac/java).
+
+---
+
+# A. Kode untuk Laprak (MyComparable / FourDigitNumber) — tambah pemanggilan `equal`
+
+Simpan sebagai `Main.java` (semua kelas non-public boleh di satu file):
+
+```java
+// MyComparable interface
+public interface MyComparable {
+    boolean greaterThan(Object obj);
+    boolean lessThan(Object obj);
+    boolean equal(Object obj);
+}
+
+// Constants interface
+interface Constants {
+    int MIN = 1000;
+    int MAX = 9999;
+}
+
+// FourDigitNumber implements Constants and MyComparable
+class FourDigitNumber implements Constants, MyComparable {
+    private int value;
+
+    public FourDigitNumber(int initValue) {
+        if (initValue >= MIN && initValue <= MAX) {
+            this.value = initValue;
+        } else {
+            throw new IllegalArgumentException("Value must be between " + MIN + " and " + MAX);
+        }
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean greaterThan(Object obj) {
+        if (obj instanceof FourDigitNumber) {
+            FourDigitNumber number = (FourDigitNumber) obj;
+            return this.value > number.getValue();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean lessThan(Object obj) {
+        if (obj instanceof FourDigitNumber) {
+            FourDigitNumber number = (FourDigitNumber) obj;
+            return this.value < number.getValue();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean equal(Object obj) {
+        if (obj instanceof FourDigitNumber) {
+            FourDigitNumber number = (FourDigitNumber) obj;
+            return this.value == number.getValue();
+        }
+        return false;
+    }
+}
+
+// Program utama
+public class Main {
+    public static void main(String[] args) {
+        FourDigitNumber numberPlay = new FourDigitNumber(2000);
+        FourDigitNumber anotherNumber = new FourDigitNumber(8000);
+        FourDigitNumber sameAsPlay = new FourDigitNumber(2000);
+
+        // Membandingkan numberPlay dengan anotherNumber
+        if (numberPlay.greaterThan(anotherNumber)) {
+            System.out.println(numberPlay.getValue() + " is greater than " + anotherNumber.getValue());
+        }
+
+        if (numberPlay.lessThan(anotherNumber)) {
+            System.out.println(numberPlay.getValue() + " is not greater than " + anotherNumber.getValue());
+        }
+
+        // Contoh pemanggilan equal (sesuai instruksi)
+        if (numberPlay.equal(sameAsPlay)) {
+            System.out.println(numberPlay.getValue() + " is equal to " + sameAsPlay.getValue());
+        } else {
+            System.out.println(numberPlay.getValue() + " is not equal to " + sameAsPlay.getValue());
+        }
+    }
+}
+```
+
+**Contoh output**:
+
+```
+2000 is not greater than 8000
+2000 is equal to 2000
+```
+
+(NB: sesuai logika if di atas, kalau ingin pesan yang berbeda susun if/else sesuai soal.)
+
+---
+
+# B. Kode untuk Post-Test — implementasi `Operasi` dan `Calculator`
+
+Instruksi: buat program yang menggambarkan implementasi interface `Operasi` pada class `Calculator` sehingga dapat mengoperasikan 2 bilangan (Bil1 dan Bil2) menggunakan method yang ada di interface.
+
+Berikut contoh implementasinya. Simpan sebagai `CalculatorProgram.java`:
+
+```java
+import java.util.Scanner;
+
+// Interface Operasi
+interface Operasi {
+    // deklarasi variable dan/atau method
+    public void Penjumlahan();   // menampilkan atau mengolah penjumlahan Bil1 + Bil2
+    public void Pengurangan();   // menampilkan atau mengolah Bil1 - Bil2
+    public double Perkalian();   // mengembalikan hasil perkalian
+    public double Pembagian();   // mengembalikan hasil pembagian (cek pembagi 0)
+}
+
+// Class Calculator mengimplementasi Operasi
+class Calculator implements Operasi {
+    private double bil1;
+    private double bil2;
+
+    public Calculator(double bil1, double bil2) {
+        this.bil1 = bil1;
+        this.bil2 = bil2;
+    }
+
+    // Menampilkan hasil penjumlahan
+    @Override
+    public void Penjumlahan() {
+        double hasil = this.bil1 + this.bil2;
+        System.out.println("Penjumlahan: " + this.bil1 + " + " + this.bil2 + " = " + hasil);
+    }
+
+    // Menampilkan hasil pengurangan
+    @Override
+    public void Pengurangan() {
+        double hasil = this.bil1 - this.bil2;
+        System.out.println("Pengurangan: " + this.bil1 + " - " + this.bil2 + " = " + hasil);
+    }
+
+    // Mengembalikan hasil perkalian
+    @Override
+    public double Perkalian() {
+        return this.bil1 * this.bil2;
+    }
+
+    // Mengembalikan hasil pembagian (cek pembagi 0)
+    @Override
+    public double Pembagian() {
+        if (this.bil2 == 0) {
+            // menangani pembagian dengan nol -> bisa lempar exception atau kembalikan Double.POSITIVE_INFINITY
+            System.out.println("Pembagian: kesalahan: pembagi (Bil2) = 0");
+            return Double.NaN;
+        }
+        return this.bil1 / this.bil2;
+    }
+
+    // tambahan: getter jika diperlukan
+    public double getBil1() { return bil1; }
+    public double getBil2() { return bil2; }
+}
+
+// Program utama untuk demo
+public class CalculatorProgram {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Masukkan Bil1: ");
+        double b1 = sc.nextDouble();
+        System.out.print("Masukkan Bil2: ");
+        double b2 = sc.nextDouble();
+
+        Calculator calc = new Calculator(b1, b2);
+
+        // panggil method sesuai interface
+        calc.Penjumlahan();
+        calc.Pengurangan();
+
+        double hasilKali = calc.Perkalian();
+        System.out.println("Perkalian: " + b1 + " * " + b2 + " = " + hasilKali);
+
+        double hasilBagi = calc.Pembagian();
+        if (!Double.isNaN(hasilBagi)) {
+            System.out.println("Pembagian: " + b1 + " / " + b2 + " = " + hasilBagi);
+        } else {
+            System.out.println("Pembagian tidak dapat dilakukan (pembagi = 0).");
+        }
+
+        sc.close();
+    }
+}
+```
+
+**Cara pakai / contoh input-output**:
+
+* Jika masukkan Bil1 = 10 dan Bil2 = 2, output:
+
+```
+Penjumlahan: 10.0 + 2.0 = 12.0
+Pengurangan: 10.0 - 2.0 = 8.0
+Perkalian: 10.0 * 2.0 = 20.0
+Pembagian: 10.0 / 2.0 = 5.0
+```
+
+* Jika Bil2 = 0, bagian pembagian akan menampilkan peringatan dan mengembalikan `NaN`.
+
+---
+
+Kalau mau, saya bisa:
+
+* Sesuaikan style output (bahasa Inggris/Indonesia, format).
+* Gabungkan semua contoh ke dalam satu file jika kamu butuh.
+* Menambahkan pengecekan input non-numerik atau mengubah method agar **tidak** langsung mencetak tetapi mengembalikan nilai (sesuai kebutuhan penilaian).
+
+Mau saya refine salah satu (mis. ubah `Penjumlahan` dan `Pengurangan` agar mengembalikan `double` alih-alih `void`)?
