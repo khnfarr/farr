@@ -1,0 +1,86 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};
+void Visit(Node* t) {
+    cout << t->data << " ";
+}
+void PreOrder(Node* t) {
+    if (t != NULL) {
+        Visit(t);
+        PreOrder(t->left);
+        PreOrder(t->right);
+    }
+}
+void InOrder(Node* t) {
+    if (t != NULL) {
+        InOrder(t->left);
+        Visit(t);
+        InOrder(t->right);
+    }
+}
+void PostOrder(Node* t) {
+    if (t != NULL) {
+        PostOrder(t->left);
+        PostOrder(t->right);
+        Visit(t);
+    }
+}
+void LevelOrder(Node* root) {
+    if (root == NULL) return;
+
+    Node* queue[10];
+    int front = 0, rear = 0;
+
+    queue[rear++] = root;
+
+    while (front < rear) {
+        Node* current = queue[front++];
+        Visit(current);
+
+        if (current->left != NULL)
+            queue[rear++] = current->left;
+
+        if (current->right != NULL)
+            queue[rear++] = current->right;
+    }
+}
+int main() {
+    Node *x = new Node;
+    Node *y = new Node;
+    Node *z = new Node;
+
+    x->data = 1;
+    y->data = 2;
+    z->data = 3;
+
+    x->left  = y;
+    x->right = z;
+
+    y->left = y->right = NULL;
+    z->left = z->right = NULL;
+
+    cout << "Kunjungan Inorder : ";
+    InOrder(x);
+    cout << endl;
+
+    cout << "Kunjungan Preorder : ";
+    PreOrder(x);
+    cout << endl;
+
+    cout << "Kunjungan Postorder : ";
+    PostOrder(x);
+    cout << endl;
+
+    cout << "Kunjungan Level order : ";
+    LevelOrder(x);
+    cout << endl;
+
+    return 0;
+}
+
+
