@@ -1,0 +1,256 @@
+
+# **JAWABAN POST-TEST PRAKTIKUM MONGODB**
+
+## **1. Set-up cluster di MongoDB Atlas**
+
+1. Buka [https://www.mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
+2. Login / Sign Up akun MongoDB
+3. Pilih menu **Cluster → Build a Cluster**
+4. Pilih **Free Tier (M0)**
+5. Tentukan **Cluster Name, Provider, dan Region**
+6. Klik **Create Deployment**
+7. Cluster berhasil dibuat dan status **Running**
+
+## **2. Membuat koneksi baru di MongoDB Compass**
+
+1. Klik **Connect → Choose connection method**
+2. Pilih **MongoDB Compass**
+3. Salin **connection string**
+4. Buka aplikasi **MongoDB Compass**
+5. Paste connection string
+6. Klik **Save & Connect**
+7. Koneksi berhasil terhubung
+
+## **3. Membuat database dan collection**
+
+1. Klik ikon **“+” (Create Database)**
+2. Isi:
+
+   * Database Name: `movieDB`
+   * Collection Name: `users`
+3. Klik **Create Database**
+4. Tambahkan collection baru:
+
+   * `movies`
+   * `posts`
+
+## **4. Insert document ke collection users**
+
+```js
+db.users.insertOne({
+  username: "GoodGuyGreg",
+  firstname: "Good Guy",
+  lastname: "Greg"
+})
+```
+
+✔ Document berhasil ditambahkan
+
+---
+
+## **5. Insert banyak document (insertMany)**
+
+```js
+db.users.insertMany([
+  {
+    username: "GoodGuyGreg",
+    firstname: "Good Guy",
+    lastname: "Greg"
+  },
+  {
+    username: "JohnDoe1234",
+    firstname: "John",
+    lastname: "Doe",
+    yearjoined: 2005
+  },
+  {
+    username: "SamJohnSings",
+    firstname: "Sam John",
+    lastname: "Sings",
+    rating: 4.9
+  }
+])
+```
+
+✔ Beberapa document berhasil ditambahkan
+
+---
+
+## **6. Import document ke collection movies**
+
+1. Buka collection **movies**
+2. Klik **Add Data → Import File**
+3. Pilih file **movies.json**
+4. Klik **Import**
+5. Import selesai dan data tampil di collection
+
+---
+
+## **7. Insert document ke collection posts**
+
+1. Buka collection **posts**
+2. Klik **Add Data → Insert Document**
+3. Paste isi file **posts.json**
+4. Klik **Insert**
+   ✔ Document berhasil ditambahkan
+
+---
+
+## **8. Membuat query (find)**
+
+a. Menampilkan semua data:
+
+```js
+db.movies.find()
+```
+
+b. Film oleh Quentin Tarantino:
+
+```js
+db.movies.find({ writer: "Quentin Tarantino" })
+```
+
+c. Film yang dimainkan Brad Pitt:
+
+```js
+db.movies.find({ actors: "Brad Pitt" })
+```
+
+d. Film tahun 90-an:
+
+```js
+db.movies.find({ year: { $gte: 1990, $lt: 2000 } })
+```
+
+e. Film yang memiliki sinopsis:
+
+```js
+db.movies.find({ synopsis: { $exists: true } })
+```
+
+---
+
+## **9. Update document**
+
+Menambahkan sinopsis pada film *The Hobbit: An Unexpected Journey*:
+
+```js
+db.movies.updateOne(
+  { title: "The Hobbit: An Unexpected Journey" },
+  {
+    $set: {
+      synopsis: "A reluctant hobbit, Bilbo Baggins, sets out on a journey with dwarves to reclaim their mountain home."
+    }
+  }
+)
+```
+
+✔ Data berhasil di-update
+
+---
+
+## **10. Delete document**
+
+Menghapus film *Pulp Fiction*:
+
+```js
+db.movies.deleteOne({ title: "Pulp Fiction" })
+```
+
+Menghapus film Brad Pitt tahun 2000-an:
+
+```js
+db.movies.deleteMany({
+  $and: [
+    { actors: "Brad Pitt" },
+    { year: { $gte: 2000 } }
+  ]
+})
+```
+
+✔ Document berhasil dihapus
+
+
+## ✅ **POST-TEST = 5 SOAL (RESMI SESUAI TABEL 9.7)**
+
+Di bagian **9.7 POST TEST** tertulis **5 pertanyaan**:
+
+### **1️⃣ Set-up cluster di MongoDB Atlas dan membuat koneksi di MongoDB Compass**
+
+📸 Screenshot bukti:
+
+* Cluster Atlas berhasil
+* Compass status **Connected**
+
+---
+
+### **2️⃣ Membuat database, connection, dan document**
+
+📸 Screenshot bukti:
+
+* Database `movieDB`
+* Collection (`users`, `movies`, `posts`)
+* Insert document berhasil
+
+---
+
+### **3️⃣ Membuat query di MongoDB Compass**
+
+📸 Screenshot bukti query:
+
+* `find()`
+* Filter (writer / actors / year / synopsis)
+
+---
+
+### **4️⃣ Update document di MongoDB Compass**
+
+📸 Screenshot bukti:
+
+* `updateOne`
+* `modifiedCount: 1`
+* Data sebelum & sesudah update
+
+---
+
+### **5️⃣ Menghapus document di MongoDB Compass**
+
+📸 Screenshot bukti:
+
+* `deleteOne` atau `deleteMany`
+* `deletedCount`
+
+---
+
+
+## ✍️ **JAWABAN POST-TEST (RINGKAS & SIAP KUMPUL)**
+
+### **Jawaban 1**
+
+Telah dilakukan pembuatan cluster MongoDB Atlas menggunakan Free Tier dan berhasil melakukan koneksi ke MongoDB Compass menggunakan connection string.
+
+---
+
+### **Jawaban 2**
+
+Telah dibuat database `movieDB` beserta collection `users`, `movies`, dan `posts`. Document berhasil ditambahkan menggunakan insertOne dan insertMany.
+
+---
+
+### **Jawaban 3**
+
+Query dilakukan menggunakan perintah `find()` dengan beberapa kriteria seperti writer, actors, tahun rilis, dan keberadaan synopsis.
+
+---
+
+### **Jawaban 4**
+
+Update document dilakukan menggunakan perintah `updateOne()` untuk menambahkan field synopsis pada film tertentu dan berhasil dimodifikasi.
+
+---
+
+### **Jawaban 5**
+
+Penghapusan document dilakukan menggunakan perintah `deleteOne()` dan `deleteMany()` sesuai kriteria yang ditentukan dan berhasil dijalankan.
+
+Tinggal bilang mau yang mana.
