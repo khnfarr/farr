@@ -1,0 +1,83 @@
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Main {
+   public static void main(String[] args) {
+       Scanner input = new Scanner(System.in);
+
+       double panjang = 0, lebar = 0, tinggi = 0, harga = 0;
+       boolean valid = false;
+
+       while (!valid) {
+           try {
+               System.out.println("Masukkan panjang balok : ");
+               panjang = input.nextDouble();
+
+               System.out.println("Masukkan lebar balok : ");
+               lebar = input.nextDouble();
+
+               System.out.println("Masukkan tinggi balok : ");
+               tinggi = input.nextDouble();
+
+               if (panjang <= lebar) {
+                   throw new IllegalArgumentException(
+                           "panjang lebih besar dari lebar"
+                   );
+               }
+
+               if (lebar <= tinggi) {
+                   throw new IllegalArgumentException(
+                           "Lebar lebih besar dari tinggi!"
+                   );
+               }
+               if (lebar < 0 || tinggi < 0 || panjang < 0) {
+                   throw new IllegalArgumentException(
+                           "Error : Semua ukuran harus Bernilai Positif"
+                   );
+               }
+
+               if (panjang * lebar * tinggi > 10000) {
+                   throw new IllegalArgumentException(
+                           "Volume terlalu besar! Maksimal 10000"
+                   );
+               }
+               valid = true;
+           } catch (InputMismatchException e) {
+               System.out.println("Error : Input harus berupa angka !");
+               input.nextLine();
+           } catch (IllegalArgumentException e) {
+               System.out.println("Error : " + e.getMessage());
+
+           }
+
+
+
+       }
+       double volume = panjang * lebar * tinggi;
+
+       harga = volume * 5000;
+
+       System.out.println("Panjang : " + panjang);
+       System.out.println("Lebar : " + lebar);
+       System.out.println("Tinggi : " + tinggi);
+       System.out.println("Volume : " + volume);
+       System.out.println("Harga : " + harga);
+
+       try {
+           FileWriter writer = new FileWriter("volume_balok.txt");
+           writer.write("===== DETAIL PEMBELIAN ====");
+           writer.write("Panjang : " + panjang + "\n");
+           writer.write("Lebar : " + lebar + "\n");
+           writer.write("Tinggi : " + tinggi + "\n");
+           writer.write("Volume : " + volume + "\n");
+           writer.write("Harga : " + harga + "\n");
+           writer.close();
+           System.out.println("\n Hasil Berhasil disimpa ke File Volume_Balok.txt");
+       } catch (IOException e) {
+           System.out.println("Gagal menyimpan ke file!");
+       }
+       input.close();
+   }
+}
