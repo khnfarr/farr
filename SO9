@@ -1,0 +1,240 @@
+
+## 1. Buat satu folder pada drive
+
+```cmd
+D:
+mkdir PraktikumCMD
+```
+
+🔎 **Cek**
+
+```cmd
+dir
+```
+
+---
+
+## 2. Buat satu folder lain di dalam folder tersebut
+
+```cmd
+cd PraktikumCMD
+mkdir Tugas
+```
+
+🔎 **Cek**
+
+```cmd
+dir
+```
+
+---
+
+## 3. Buat file txt di dalam folder `Tugas`
+
+Masuk ke folder:
+
+```cmd
+cd Tugas
+```
+
+### a. tugasPBO.txt
+
+```cmd
+notepad tugasPBO.txt
+```
+
+Isi:
+
+```
+Tugas PBO: membuat proyek PBO
+```
+
+➡ CTRL + S → Tutup
+
+---
+
+### b. tugasSDATA.txt
+
+```cmd
+notepad tugasSDATA.txt
+```
+
+Isi:
+
+```
+Tugas Struktur Data: membuat proyek struktur data
+```
+
+---
+
+### c. tugasSO.txt
+
+```cmd
+notepad tugasSO.txt
+```
+
+Isi:
+
+```
+Tugas Sistem Operasi: membuat materi sistem operasi
+```
+
+---
+
+### d. tugasBASDAT.txt
+
+```cmd
+notepad tugasBASDAT.txt
+```
+
+Isi:
+
+```
+Tugas Basis Data: membuat laporan proyek basis data
+```
+
+---
+
+## 4. Tunjukkan bahwa file txt berhasil dibuat
+
+```cmd
+dir
+```
+
+✅ Akan terlihat:
+
+```
+tugasPBO.txt
+tugasSDATA.txt
+tugasSO.txt
+tugasBASDAT.txt
+```
+
+---
+
+## 5. Duplikasikan 1 tugas ke folder sebelumnya
+
+Misal menyalin **tugasPBO.txt**
+
+```cmd
+copy tugasPBO.txt ..
+```
+
+---
+
+## 6. Ganti nama file hasil duplikasi menjadi `tugasselesai.txt`
+
+```cmd
+cd ..
+rename tugasPBO.txt tugasselesai.txt
+```
+
+---
+
+## 7. Tunjukkan nama sudah berubah
+
+```cmd
+dir
+```
+
+✅ Terlihat `tugasselesai.txt`
+
+---
+
+## 8. Duplikasikan 1 tugas lagi untuk tugas Kelompok
+
+Misal ambil **tugasSDATA.txt**
+
+```cmd
+cd Tugas
+copy tugasSDATA.txt ..
+```
+
+---
+
+## 9. Ganti nama menjadi `tugasKelompok.txt`
+
+```cmd
+cd ..
+rename tugasSDATA.txt tugasKelompok.txt
+```
+
+---
+
+## 10. Tunjukkan nama berhasil diganti
+
+```cmd
+dir
+```
+
+✅ Ada:
+
+```
+tugasselesai.txt
+tugasKelompok.txt
+```
+
+---
+
+## 11. Tampilkan isi tugasKelompok & tugasSelesai
+
+```cmd
+type tugasselesai.txt
+type tugasKelompok.txt
+```
+
+---
+
+## 12. Timpa isi tugasSelesai
+
+```cmd
+echo Tugas Sudah Dikerjakan > tugasselesai.txt
+```
+
+---
+
+## 13. Tunjukkan isi tugasSelesai
+
+```cmd
+type tugasselesai.txt
+```
+
+Output:
+
+```
+Tugas Sudah Dikerjakan
+```
+
+---
+
+## 14. Tambahkan isi pada tugasKelompok
+
+```cmd
+echo Ini tugas kelompok >> tugasKelompok.txt
+```
+
+---
+
+## 15. Tunjukkan isi tugasKelompok
+
+```cmd
+type tugasKelompok.txt
+```
+
+---
+
+## 16. Hapus tugasSelesai
+
+```cmd
+del tugasselesai.txt
+```
+
+🔎 **Cek akhir**
+
+```cmd
+dir
+```
+
+✅ `tugasselesai.txt` sudah **terhapus**
+
+* atau **sesuai format kampusmu (UAD)**
