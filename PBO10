@@ -1,0 +1,239 @@
+
+## ✅ POST TEST 10.7 – JAWABAN LENGKAP
+
+### 📌 Soal:
+
+Tambahkan skenario program login dengan perilaku:
+
+1. **Fitur pendaftaran user baru** (email, no telp, nama, username, password)
+2. **Simpan data user ke database**
+3. **Terapkan exception handling pada form pendaftaran**
+
+---
+
+## 1️⃣ Fitur Pendaftaran User Baru
+
+### 📖 Penjelasan
+
+Program ditambahkan **form registrasi** menggunakan Java Swing yang berisi:
+
+* Nama
+* Email
+* No. Telepon
+* Username
+* Password
+* Tombol **Register**
+
+Form ini memungkinkan user baru mendaftar sebelum login.
+
+---
+
+### 💻 Contoh Kode (Form Register)
+
+```java
+import javax.swing.*;
+import java.awt.event.*;
+
+public class RegisterForm extends JFrame implements ActionListener {
+
+    JTextField txtNama, txtEmail, txtTelp, txtUsername;
+    JPasswordField txtPassword;
+    JButton btnRegister;
+
+    public RegisterForm() {
+        setTitle("Register User");
+        setSize(350, 300);
+        setLayout(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        JLabel l1 = new JLabel("Nama");
+        l1.setBounds(20, 20, 100, 25);
+        add(l1);
+
+        txtNama = new JTextField();
+        txtNama.setBounds(120, 20, 180, 25);
+        add(txtNama);
+
+        JLabel l2 = new JLabel("Email");
+        l2.setBounds(20, 55, 100, 25);
+        add(l2);
+
+        txtEmail = new JTextField();
+        txtEmail.setBounds(120, 55, 180, 25);
+        add(txtEmail);
+
+        JLabel l3 = new JLabel("No Telp");
+        l3.setBounds(20, 90, 100, 25);
+        add(l3);
+
+        txtTelp = new JTextField();
+        txtTelp.setBounds(120, 90, 180, 25);
+        add(txtTelp);
+
+        JLabel l4 = new JLabel("Username");
+        l4.setBounds(20, 125, 100, 25);
+        add(l4);
+
+        txtUsername = new JTextField();
+        txtUsername.setBounds(120, 125, 180, 25);
+        add(txtUsername);
+
+        JLabel l5 = new JLabel("Password");
+        l5.setBounds(20, 160, 100, 25);
+        add(l5);
+
+        txtPassword = new JPasswordField();
+        txtPassword.setBounds(120, 160, 180, 25);
+        add(txtPassword);
+
+        btnRegister = new JButton("Register");
+        btnRegister.setBounds(120, 200, 100, 30);
+        btnRegister.addActionListener(this);
+        add(btnRegister);
+
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // diproses di bagian database
+    }
+
+    public static void main(String[] args) {
+        new RegisterForm();
+    }
+}
+```
+
+---
+
+## 2️⃣ Menyimpan Data User ke Database
+
+### 📖 Penjelasan
+
+* Database menggunakan **SQLite**
+* Data disimpan ke tabel `users`
+* Proses insert menggunakan **PreparedStatement** (aman dari SQL Injection)
+
+---
+
+### 🗄️ Struktur Tabel Database
+
+```sql
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nama TEXT,
+    email TEXT,
+    telp TEXT,
+    username TEXT,
+    password TEXT
+);
+```
+
+---
+
+### 💻 Kode Simpan ke Database
+
+```java
+import java.sql.*;
+
+public class DatabaseConnection {
+
+    public static Connection getConnection() throws Exception {
+        String url = "jdbc:sqlite:users.db";
+        return DriverManager.getConnection(url);
+    }
+}
+```
+
+Tambahkan pada `actionPerformed` di `RegisterForm`:
+
+```java
+@Override
+public void actionPerformed(ActionEvent e) {
+    try {
+        Connection conn = DatabaseConnection.getConnection();
+
+        String sql = "INSERT INTO users (nama, email, telp, username, password) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement pst = conn.prepareStatement(sql);
+
+        pst.setString(1, txtNama.getText());
+        pst.setString(2, txtEmail.getText());
+        pst.setString(3, txtTelp.getText());
+        pst.setString(4, txtUsername.getText());
+        pst.setString(5, new String(txtPassword.getPassword()));
+
+        pst.executeUpdate();
+        JOptionPane.showMessageDialog(this, "Registrasi berhasil");
+
+        conn.close();
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, ex.getMessage());
+    }
+}
+```
+
+---
+
+## 3️⃣ Exception Handling pada Form Pendaftaran
+
+### 📖 Penjelasan
+
+Exception handling digunakan untuk:
+
+* Data kosong
+* Gagal koneksi database
+* Kesalahan input user
+
+---
+
+### 💻 Class Exception Khusus
+
+```java
+class RegisterException extends Exception {
+    public RegisterException(String message) {
+        super(message);
+    }
+}
+```
+
+---
+
+### 💻 Implementasi Exception Handling
+
+```java
+@Override
+public void actionPerformed(ActionEvent e) {
+    try {
+        if (txtNama.getText().isEmpty() ||
+            txtEmail.getText().isEmpty() ||
+            txtTelp.getText().isEmpty() ||
+            txtUsername.getText().isEmpty() ||
+            txtPassword.getPassword().length == 0) {
+
+            throw new RegisterException("Semua field harus diisi!");
+        }
+
+        Connection conn = DatabaseConnection.getConnection();
+        String sql = "INSERT INTO users (nama, email, telp, username, password) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement pst = conn.prepareStatement(sql);
+
+        pst.setString(1, txtNama.getText());
+        pst.setString(2, txtEmail.getText());
+        pst.setString(3, txtTelp.getText());
+        pst.setString(4, txtUsername.getText());
+        pst.setString(5, new String(txtPassword.getPassword()));
+
+        pst.executeUpdate();
+        JOptionPane.showMessageDialog(this, "Registrasi berhasil");
+        conn.close();
+
+    } catch (RegisterException ex) {
+        JOptionPane.showMessageDialog(this, ex.getMessage());
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+    }
+}
+
+Tinggal bilang mau format apa 👍
