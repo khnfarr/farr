@@ -1,0 +1,45 @@
+1. Langkah-langkah detail pembuatan kabel jaringan untuk topologi Star
+
+Jawaban:
+
+1. Siapkan alat dan bahan:
+
+Kabel UTP
+
+Konektor RJ-45
+
+Crimping tool
+
+LAN tester
+
+2. Ukur dan potong kabel UTP sesuai kebutuhan.
+3. Kupas kulit luar kabel ±2–3 cm menggunakan crimping tool.
+4. Pisahkan dan luruskan 8 kabel kecil di dalamnya.
+5. Susun warna kabel sesuai standar (biasanya straight / 568B untuk topologi star):
+Putih-Oranye
+Oranye
+Putih-Hijau
+Biru
+Putih-Biru
+Hijau
+Putih-Coklat
+Coklat
+6. Rapikan dan potong ujung kabel agar rata.
+7. Masukkan kabel ke dalam konektor RJ-45 sesuai urutan.
+8. Pastikan semua kabel masuk sampai ujung konektor.
+9. Jepit (crimp) menggunakan crimping tool sampai terkunci.
+10. Ulangi langkah yang sama pada ujung kabel satunya (karena pakai straight, urutannya sama).
+
+2. Langkah pengujian keberhasilan kabel (straight & cross)
+Jawaban:
+1. Hubungkan kedua ujung kabel ke alat LAN tester (main dan remote).
+2. Nyalakan LAN tester.
+3. Perhatikan lampu indikator:
+Jika semua lampu menyala berurutan (1–8) → kabel berhasil / benar
+Jika ada lampu tidak menyala → kabel putus / tidak tersambung
+Jika urutan tidak sesuai → kabel salah susunan
+4. Untuk kabel:
+Straight → urutan lampu sama (1-1, 2-2, dst)
+Cross → ada pertukaran (misalnya 1-3, 2-6, dst)
+5. Jika hasil tidak sesuai, lakukan crimping ulang.
+
