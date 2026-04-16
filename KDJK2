@@ -1,0 +1,55 @@
+f. Jumlah bit subnet
+Butuh 5 subnet → cari n: 2ⁿ ≥ 5 → n = 3 bit
+
+g. Netprefix baru
+Awal: /24
+Tambah 3 bit → /27
+
+h. Subnet mask
+/27 = 255.255.255.224
+
+i. IP host ke-3 dan ke-5 (contoh untuk 192.168.129.0/24)
+Subnet /27 memiliki:
+1 subnet = 32 IP
+Host usable = 30
+Subnet #1:
+Network: 192.168.129.0
+Host:
+IP ke-3 → 192.168.129.3
+IP ke-5 → 192.168.129.5
+Subnet #2:
+Network: 192.168.129.32
+IP ke-3 → 192.168.129.35
+IP ke-5 → 192.168.129.37
+Subnet #3:
+Network: 192.168.129.64
+IP ke-3 → 192.168.129.67
+IP ke-5 → 192.168.129.69
+Subnet #4:
+Network: 192.168.129.96
+IP ke-3 → 192.168.129.99
+IP ke-5 → 192.168.129.101
+Subnet #5:
+Network: 192.168.129.128
+IP ke-3 → 192.168.129.131
+IP ke-5 → 192.168.129.133
+
+j. Terapkan IP addressing
+→ Assign IP sesuai subnet ke masing-masing PC
+
+k. Uji dengan ping
+1 subnet → berhasil
+beda subnet → perlu router
+
+l. Catat hasil
+→ Isi tabel hasil ping (success / fail)
+
+m. Supernet → netprefix /22
+
+n. Subnet mask /22
+/22 = 255.255.252.0
+
+o. Uji ping lagi
+
+→ Semua network bisa terhubung (karena digabung)
+
